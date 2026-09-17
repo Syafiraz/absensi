@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <!-- TAG INI WAJIB ADA AGAR TAMPILAN TIDAK KECIL DI HP -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistem Absensi Terpadu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* CSS Khusus Halaman Login agar rapi di Mobile */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        body {
+            min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, #f3e8ff 0%, #e0f2fe 100%); padding: 20px;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            width: 100%; max-width: 420px; border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.15); 
+            padding: 40px 30px; text-align: center;
+        }
+
+        .logo-icon { font-size: 45px; color: #8B5CF6; margin-bottom: 15px; }
+        .login-card h2 { font-size: 24px; color: #1e293b; font-weight: 600; margin-bottom: 5px; }
+        .login-card p { font-size: 13px; color: #64748b; margin-bottom: 30px; }
+        
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; font-size: 12px; color: #64748b; margin-bottom: 8px; font-weight: 500;}
+        
+        .form-control {
+            width: 100%; padding: 14px 15px; border: 1px solid #e2e8f0; border-radius: 10px;
+            background: #f8fafc; outline: none; font-size: 14px; transition: 0.3s;
+        }
+        .form-control:focus { border-color: #8B5CF6; background: #fff; box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1); }
+        
+        /* Dropdown khusus role */
+        select.form-control { cursor: pointer; color: #1e293b; font-weight: 500; appearance: none; }
+        
+        .btn-login {
+            width: 100%; padding: 15px; background: #8B5CF6; color: #fff;
+            border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px;
+            margin-top: 10px; transition: 0.3s; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+        .btn-login:hover { background: #7C3AED; transform: translateY(-2px); }
+
+        /* Responsif untuk HP layar sangat kecil */
+        @media (max-width: 480px) {
+            .login-card { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <i class="fas fa-fingerprint logo-icon"></i>
+        <h2>Sistem Absensi</h2>
+        <p>Silakan masuk ke akun Anda</p>
+        
+        <div class="input-group">
+            <label>Masuk Sebagai (Role)</label>
+            <select id="roleSelect" class="form-control">
+                <option value="admin">Administrator</option>
+                <option value="guru">Guru / Wali Kelas</option>
+                <option value="kesiswaan">Kesiswaan</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Email atau Username</label>
+            <input type="text" class="form-control" placeholder="Masukkan username">
+        </div>
+
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" class="form-control" placeholder="••••••••">
+        </div>
+
+        <!-- Tombol ini memanggil fungsi JavaScript di bawah -->
+        <button class="btn-login" onclick="prosesLogin()">MASUK KE SISTEM</button>
+    </div>
+
+    <script>
+        // Logika sederhana untuk mengarahkan pengguna ke folder yang tepat
+        function prosesLogin() {
+            let role = document.getElementById('roleSelect').value;
+            
+            // Animasi kecil pada tombol saat diklik
+            let btn = document.querySelector('.btn-login');
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Memuat...';
+            btn.style.opacity = '0.8';
+
+            // Beri jeda 1 detik agar terasa nyata, lalu alihkan halaman
+            setTimeout(() => {
+                if (role === 'admin') {
+                    window.location.href = 'admin/index.html';
+                } else if (role === 'guru') {
+                    window.location.href = 'guru/index.html';
+                } else if (role === 'kesiswaan') {
+                    window.location.href = 'kesiswaan/index.html';
+                }
+            }, 800);
+        }
+    </script>
+</body>
+</html>

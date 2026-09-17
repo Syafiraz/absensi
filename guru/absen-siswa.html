@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Absen - Sistem Absensi</title>
+    <!-- Memanggil CSS Master -->
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .alert-box { padding: 15px 20px; border-radius: var(--radius-sm); margin-bottom: 20px; display: flex; align-items: center; gap: 15px; font-size: 13px; font-weight: 500; transition: 0.3s;}
+        .alert-warning { background: #fffbeb; color: #b45309; border-left: 4px solid var(--warning-orange); }
+        .alert-success { background: #d1fae5; color: #065f46; border-left: 4px solid var(--primary-green); display: none; }
+        
+        .radio-cell { display: flex; justify-content: center; gap: 10px; }
+        .radio-cell label { cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 12px; }
+        
+        /* CSS Khusus Input Keterangan di dalam Tabel */
+        .input-keterangan { width: 100%; min-width: 150px; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; outline: none; font-size: 12px; font-family: 'Poppins'; color: var(--text-dark); transition: 0.3s; }
+        .input-keterangan:focus { border-color: var(--primary-purple); box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1); }
+        /* Style saat input dikunci (Read Only) */
+        .input-keterangan:disabled { background: transparent; border-color: transparent; padding: 0; color: var(--text-gray); font-weight: 500;}
+
+        .btn-simpan-area { background: #fff; padding: 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); text-align: right; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>GURU / WALI</h3> <h4>PANEL ABSENSI</h4> <p>SMK 1 INDONESIA</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="index.html"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li class="active"><a href="absen-siswa.html"><i class="fas fa-check-square"></i> Absensi Siswa</a></li>
+            <li><a href="rekap-absen.html"><i class="fas fa-file-alt"></i> Rekap Absensi</a></li>
+            <li><a href="profil.html"><i class="fas fa-user-circle"></i> Profil & Akun</a></li></ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header-top" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+            <div style="display: flex; align-items: center;">
+                <button class="menu-toggle"><i class="fas fa-bars"></i></button>
+                <div>
+                    <h2 style="font-size: 24px; color: var(--text-dark); font-weight: 600;">Input Absensi Harian</h2>
+                    <p style="font-size: 13px; color: var(--text-gray);">Pilih kelas dan isi kehadiran siswa</p>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px; background: #fff; padding: 10px 20px; border-radius: 30px; box-shadow: var(--shadow-soft);">
+                <i class="fas fa-user-circle" style="font-size: 24px; color: var(--primary-purple);"></i>
+                <span style="font-size: 13px; font-weight: 600; color: var(--text-dark);">Hi, Bp. Budi Santoso</span>
+            </div>
+        </div>
+
+        <!-- Filter Pilih Kelas -->
+        <div style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px;">
+            <label style="font-size: 13px; font-weight: 500;">Pilih Kelas:</label>
+            <select style="padding: 10px 15px; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); outline: none; font-family: 'Poppins';">
+                <option>X BDP A</option>
+                <option>XI OTKP B</option>
+            </select>
+        </div>
+
+        <!-- Banner Info (Dinamis) -->
+        <div class="alert-box alert-warning" id="alertBelum">
+            <i class="fas fa-exclamation-triangle" style="font-size: 18px;"></i>
+            <div>Kelas ini <b>belum diabsen</b> hari ini. Silakan input kehadiran siswa di bawah ini.</div>
+        </div>
+        <div class="alert-box alert-success" id="alertSudah">
+            <i class="fas fa-check-circle" style="font-size: 18px;"></i>
+            <div>Absensi hari ini sudah dikunci. Diabsen oleh: <b>Bp. Budi Santoso</b> pada pukul 07:15 WIB.</div>
+        </div>
+
+        <!-- Tabel Absen -->
+        <div class="data-card">
+            <div class="table-container">
+                <table class="data-table" id="tabelAbsen">
+                    <thead>
+                        <tr>
+                            <th>No</th> <th>NIS</th> <th style="text-align: left;">Nama Siswa</th> 
+                            <th>Status Kehadiran</th> <th style="text-align: left;">Keterangan / Detail</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td> <td>0146886</td> <td style="text-align: left; font-weight: 500;">Almira Pratiwi</td>
+                            <td class="radio-cell">
+                                <label style="color:var(--primary-green)"><input type="radio" name="abs1" checked> Hadir</label>
+                                <label style="color:var(--warning-orange)"><input type="radio" name="abs1"> Sakit</label>
+                                <label style="color:var(--primary-cyan)"><input type="radio" name="abs1"> Izin</label>
+                                <label style="color:var(--danger-red)"><input type="radio" name="abs1"> Alpa</label>
+                            </td>
+                            <td><input type="text" class="input-keterangan" placeholder="Isi keterangan (opsional)..."></td>
+                        </tr>
+                        <tr>
+                            <td>2</td> <td>0333958</td> <td style="text-align: left; font-weight: 500;">Zahra Safitri</td>
+                            <td class="radio-cell">
+                                <label style="color:var(--primary-green)"><input type="radio" name="abs2"> Hadir</label>
+                                <label style="color:var(--warning-orange)"><input type="radio" name="abs2"> Sakit</label>
+                                <label style="color:var(--primary-cyan)"><input type="radio" name="abs2" checked> Izin</label>
+                                <label style="color:var(--danger-red)"><input type="radio" name="abs2"> Alpa</label>
+                            </td>
+                            <!-- Contoh guru mengisi keterangan izin -->
+                            <td><input type="text" class="input-keterangan" value="Ada acara keluarga"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tombol Simpan -->
+        <div class="btn-simpan-area" id="areaTombol">
+            <p style="font-size: 11px; color: var(--danger-red); margin-bottom: 10px;">*Penting: Data hanya bisa diinput 1x per hari.</p>
+            <button class="btn-purple" style="font-size: 14px; padding: 12px 25px;" onclick="simpanAbsen()"><i class="fas fa-save"></i> Simpan Absensi Hari Ini</button>
+        </div>
+    </main>
+
+    <script>
+        function simpanAbsen() {
+            let konfirmasi = confirm("Simpan absensi? Data akan dikunci dan tidak bisa diubah oleh guru lain hari ini.");
+            if(konfirmasi) {
+                // 1. Sembunyikan alert kuning, munculkan alert hijau
+                document.getElementById('alertBelum').style.display = 'none';
+                document.getElementById('alertSudah').style.display = 'flex';
+                
+                // 2. Sembunyikan area tombol simpan
+                document.getElementById('areaTombol').style.display = 'none';
+
+                // 3. Disable semua radio button
+                let radios = document.querySelectorAll('input[type="radio"]');
+                radios.forEach(radio => { radio.disabled = true; });
+
+                // 4. Disable semua input keterangan (ubah jadi teks biasa)
+                let inputsKet = document.querySelectorAll('.input-keterangan');
+                inputsKet.forEach(input => {
+                    input.disabled = true; // Kunci input
+                    if (input.value.trim() === "") {
+                        input.value = "-"; // Jika kosong, beri tanda strip (-)
+                    }
+                });
+            }
+        }
+
+        // Script Hamburger Menu
+        document.addEventListener("DOMContentLoaded", function() { const overlay = document.createElement('div'); overlay.className = 'sidebar-overlay'; document.body.appendChild(overlay); const sidebar = document.querySelector('.sidebar'); const menuBtn = document.querySelector('.menu-toggle'); if(menuBtn) { menuBtn.addEventListener('click', () => { sidebar.classList.add('active'); overlay.classList.add('show'); }); } overlay.addEventListener('click', () => { sidebar.classList.remove('active'); overlay.classList.remove('show'); }); });
+    </script>
+</body>
+</html>

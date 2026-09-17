@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Kelas - Sistem Absensi</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: white; width: 400px; border-radius: var(--radius-lg); box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; max-width: 90%;}
+        .modal-header { padding: 20px 25px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #f8fafc;}
+        .modal-body { padding: 25px; }
+        .modal-footer { padding: 15px 25px; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 10px; background: #f8fafc;}
+        .modal-close { cursor: pointer; color: #888; font-weight: bold; font-size: 18px;}
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 12px; color: var(--text-gray); margin-bottom: 5px; font-weight: 500;}
+        .form-control { width: 100%; padding: 10px 15px; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); outline: none; font-size: 13px; font-family: 'Poppins';}
+        .form-control:focus { border-color: var(--primary-purple); }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>ADMINISTRATOR</h3> <h4>MASTER DATA</h4> <p>SMK 1 INDONESIA</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="index.html"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="kelola-user.html"><i class="fas fa-users-cog"></i> Kelola User</a></li>
+            <li><a href="kelola-guru.html"><i class="fas fa-chalkboard-teacher"></i> Kelola Guru</a></li>
+            <li><a href="kelola-siswa.html"><i class="fas fa-user-graduate"></i> Kelola Siswa</a></li>
+            <li class="active"><a href="kelola-kelas.html"><i class="fas fa-layer-group"></i> Kelola Kelas</a></li>
+            <li><a href="relasi-kelas.html"><i class="fas fa-link"></i> Relasi Guru-Kelas</a></li>
+            <li><a href="profil.html"><i class="fas fa-user-circle"></i> Profil & Akun</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header-top" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <div style="display: flex; align-items: center;">
+                <button class="menu-toggle"><i class="fas fa-bars"></i></button>
+                <div>
+                    <h2 style="font-size: 24px; color: var(--text-dark); font-weight: 600;">Kelola Kelas & Jurusan</h2>
+                    <p style="font-size: 13px; color: var(--text-gray);">Manajemen pengelompokan kelas dan prodi</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-grid">
+            <!-- Kolom Daftar Kelas -->
+            <div class="data-card">
+                <div class="data-header purple">
+                    <div><h3>Daftar Kelas</h3></div>
+                    <button class="btn-action" style="background: rgba(255,255,255,0.2);" onclick="bukaModal('Kelas')"><i class="fas fa-plus"></i> Baru</button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Tingkat</th> <th>Jurusan</th> <th>Indeks</th> <th>Aksi</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>X</td> <td>BDP</td> <td>A</td>
+                                <td class="action-btns">
+                                    <button class="btn-action btn-edit" onclick="bukaModal('Kelas')"><i class="fas fa-edit"></i></button>
+                                    <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>XII</td> <td>OTKP</td> <td>A</td>
+                                <td class="action-btns">
+                                    <button class="btn-action btn-edit" onclick="bukaModal('Kelas')"><i class="fas fa-edit"></i></button>
+                                    <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Kolom Daftar Jurusan -->
+            <div class="data-card">
+                <div class="data-header purple">
+                    <div><h3>Daftar Jurusan / Prodi</h3></div>
+                    <button class="btn-action" style="background: rgba(255,255,255,0.2);" onclick="bukaModal('Jurusan')"><i class="fas fa-plus"></i> Baru</button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Kode</th> <th style="text-align: left;">Nama Jurusan</th> <th>Aksi</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>X</td> <td>BDP</td> <td>A</td>
+                                <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal('Kelas')"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>X</td> <td>OTKP</td> <td>B</td>
+                                <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal('Kelas')"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>XI</td> <td>RPL</td> <td>A</td>
+                                <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal('Kelas')"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>XI</td> <td>TKJ</td> <td>A</td>
+                                <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal('Kelas')"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>XII</td> <td>OTKP</td> <td>A</td>
+                                <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal('Kelas')"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td>XII</td> <td>AKL</td> <td>B</td>
+                                <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal('Kelas')"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete"><i class="fas fa-trash"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Form (Dipakai bersama, isinya diubah via JS) -->
+    <div class="modal-overlay" id="modalKelas">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle" style="font-size: 16px; font-weight: 600;">Form Data</h3>
+                <span class="modal-close" onclick="tutupModal()">✕</span>
+            </div>
+            <div class="modal-body" id="modalBodyKelas">
+                <!-- Isi form akan diubah oleh JavaScript tergantung tombol yang diklik -->
+            </div>
+            <div class="modal-footer">
+                <button style="border: none; background: #f1f5f9; padding: 10px 15px; border-radius: var(--radius-sm); cursor: pointer;" onclick="tutupModal()">Batal</button>
+                <button class="btn-purple" onclick="simpanData()">Simpan Data</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function bukaModal(jenis) {
+            document.getElementById('modalTitle').innerText = "Form Tambah/Edit " + jenis;
+            let bodyHTML = "";
+            if (jenis === 'Kelas') {
+                bodyHTML = `
+                    <div class="form-group"><label>Tingkat (X/XI/XII)</label><input type="text" class="form-control" placeholder="Contoh: X"></div>
+                    <div class="form-group"><label>Pilih Jurusan</label><select class="form-control"><option>BDP</option><option>OTKP</option></select></div>
+                    <div class="form-group"><label>Indeks / Nama Kelas (A, B, C)</label><input type="text" class="form-control" placeholder="Contoh: A"></div>`;
+            } else {
+                bodyHTML = `
+                    <div class="form-group"><label>Kode Jurusan</label><input type="text" class="form-control" placeholder="Contoh: BDP"></div>
+                    <div class="form-group"><label>Nama Lengkap Jurusan</label><input type="text" class="form-control" placeholder="Contoh: Bisnis Daring dan Pemasaran"></div>`;
+            }
+            document.getElementById('modalBodyKelas').innerHTML = bodyHTML;
+            document.getElementById('modalKelas').style.display = 'flex';
+        }
+        function tutupModal() { document.getElementById('modalKelas').style.display = 'none'; }
+        function simpanData() { alert("Data berhasil disimpan!"); tutupModal(); }
+        document.addEventListener("DOMContentLoaded", function() { const overlay = document.createElement('div'); overlay.className = 'sidebar-overlay'; document.body.appendChild(overlay); const sidebar = document.querySelector('.sidebar'); const menuBtn = document.querySelector('.menu-toggle'); if(menuBtn) { menuBtn.addEventListener('click', () => { sidebar.classList.add('active'); overlay.classList.add('show'); }); } overlay.addEventListener('click', () => { sidebar.classList.remove('active'); overlay.classList.remove('show'); }); });
+    </script>
+</body>
+</html>

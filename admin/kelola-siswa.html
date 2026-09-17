@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Siswa - Sistem Absensi</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: white; width: 500px; border-radius: var(--radius-lg); box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; max-width: 90%;}
+        .modal-header { padding: 20px 25px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #f8fafc;}
+        .modal-body { padding: 25px; max-height: 60vh; overflow-y: auto;}
+        .modal-footer { padding: 15px 25px; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 10px; background: #f8fafc;}
+        .modal-close { cursor: pointer; color: #888; font-weight: bold; font-size: 18px;}
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 12px; color: var(--text-gray); margin-bottom: 5px; font-weight: 500;}
+        .form-control { width: 100%; padding: 10px 15px; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); outline: none; font-size: 13px; font-family: 'Poppins';}
+        .form-control:focus { border-color: var(--primary-purple); box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1); }
+        
+        /* Filter di atas tabel */
+        .filter-row { display: flex; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 20px; flex-wrap: wrap;}
+        .filter-group { flex: 1; min-width: 150px; }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>ADMINISTRATOR</h3> <h4>MASTER DATA</h4> <p>SMK 1 INDONESIA</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="index.html"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="kelola-user.html"><i class="fas fa-users-cog"></i> Kelola User</a></li>
+            <li><a href="kelola-guru.html"><i class="fas fa-chalkboard-teacher"></i> Kelola Guru</a></li>
+            <li class="active"><a href="kelola-siswa.html"><i class="fas fa-user-graduate"></i> Kelola Siswa</a></li>
+            <li><a href="kelola-kelas.html"><i class="fas fa-layer-group"></i> Kelola Kelas</a></li>
+            <li><a href="relasi-kelas.html"><i class="fas fa-link"></i> Relasi Guru-Kelas</a></li>
+            <li><a href="profil.html"><i class="fas fa-user-circle"></i> Profil & Akun</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header-top" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <div style="display: flex; align-items: center;">
+                <button class="menu-toggle"><i class="fas fa-bars"></i></button>
+                <div>
+                    <h2 style="font-size: 24px; color: var(--text-dark); font-weight: 600;">Kelola Data Siswa</h2>
+                    <p style="font-size: 13px; color: var(--text-gray);">Manajemen database seluruh siswa</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 20px; display: flex; gap: 10px;">
+            <button class="btn-purple" onclick="bukaModal()"><i class="fas fa-plus"></i> Tambah Siswa</button>
+            <button class="btn-purple" style="background: #f1f5f9; color: var(--primary-purple);"><i class="fas fa-file-csv"></i> Import CSV</button>
+        </div>
+
+        <div class="data-card" style="padding: 25px;">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>Pilih Tingkat</label>
+                    <select class="form-control"><option>- Semua Tingkat -</option><option>X</option><option>XI</option><option>XII</option></select>
+                </div>
+                <div class="filter-group">
+                    <label>Pilih Jurusan</label>
+                    <select class="form-control"><option>- Semua Jurusan -</option><option>BDP</option><option>OTKP</option></select>
+                </div>
+            </div>
+
+            <div class="table-container" style="padding: 0;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>NIS</th> <th style="text-align: left;">Nama Lengkap</th> <th>L/P</th> <th>Kelas Saat Ini</th> <th>No HP</th> <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>0146886</td> <td style="text-align: left; font-weight: 500;">Almira Pratiwi</td> <td>P</td>
+                            <td><span style="background: #f3e8ff; color: var(--primary-purple); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">X BDP A</span></td> <td>084015337550</td>
+                            <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal()"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete" onclick="konfirmasiHapus()"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>2679240</td> <td style="text-align: left; font-weight: 500;">Amelia Wijayanti</td> <td>P</td>
+                            <td><span style="background: #f3e8ff; color: var(--primary-purple); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">XII OTKP A</span></td> <td>084532304874</td>
+                            <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal()"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete" onclick="konfirmasiHapus()"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>6084227</td> <td style="text-align: left; font-weight: 500;">Cahya Wacana</td> <td>L</td>
+                            <td><span style="background: #f3e8ff; color: var(--primary-purple); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">XII BDP A</span></td> <td>089687584329</td>
+                            <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal()"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete" onclick="konfirmasiHapus()"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>4290352</td> <td style="text-align: left; font-weight: 500;">Candra Dabukke</td> <td>L</td>
+                            <td><span style="background: #f3e8ff; color: var(--primary-purple); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">X BDP A</span></td> <td>084820206388</td>
+                            <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal()"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete" onclick="konfirmasiHapus()"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>1234567</td> <td style="text-align: left; font-weight: 500;">Ferdy Pepey</td> <td>L</td>
+                            <td><span style="background: #f3e8ff; color: var(--primary-purple); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">XI RPL A</span></td> <td>081234567890</td>
+                            <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal()"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete" onclick="konfirmasiHapus()"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>1303733</td> <td style="text-align: left; font-weight: 500;">Garang Nababan</td> <td>L</td>
+                            <td><span style="background: #f3e8ff; color: var(--primary-purple); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">X OTKP B</span></td> <td>085395843971</td>
+                            <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal()"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete" onclick="konfirmasiHapus()"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>3456789</td> <td style="text-align: left; font-weight: 500;">Zahra Safitri</td> <td>P</td>
+                            <td><span style="background: #f3e8ff; color: var(--primary-purple); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">X BDP A</span></td> <td>082685034499</td>
+                            <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal()"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete" onclick="konfirmasiHapus()"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>7901233</td> <td style="text-align: left; font-weight: 500;">Toggo</td> <td>L</td>
+                            <td><span style="background: #f3e8ff; color: var(--primary-purple); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">XI TKJ A</span></td> <td>089533344455</td>
+                            <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal()"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete" onclick="konfirmasiHapus()"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Form Siswa -->
+    <div class="modal-overlay" id="modalSiswa">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="font-size: 16px; font-weight: 600;">Form Data Siswa</h3>
+                <span class="modal-close" onclick="tutupModal()">✕</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nomor Induk Siswa (NIS)</label>
+                    <input type="text" class="form-control" placeholder="Masukkan NIS...">
+                </div>
+                <div class="form-group">
+                    <label>Nama Lengkap</label>
+                    <input type="text" class="form-control" placeholder="Masukkan nama siswa...">
+                </div>
+                <div class="form-group" style="display: flex; gap: 15px;">
+                    <div style="flex: 1;">
+                        <label>Jenis Kelamin</label>
+                        <select class="form-control"><option>Laki-laki</option><option>Perempuan</option></select>
+                    </div>
+                    <div style="flex: 1;">
+                        <label>Pilih Kelas</label>
+                        <select class="form-control"><option>X BDP A</option><option>XII OTKP A</option></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>No. HP Aktif / Orang Tua</label>
+                    <input type="text" class="form-control" placeholder="Contoh: 081234...">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button style="border: none; background: #f1f5f9; padding: 10px 15px; border-radius: var(--radius-sm); cursor: pointer; font-family: 'Poppins'; font-weight: 500;" onclick="tutupModal()">Batal</button>
+                <button class="btn-purple" onclick="simpanData()">Simpan Data</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function bukaModal() { document.getElementById('modalSiswa').style.display = 'flex'; }
+        function tutupModal() { document.getElementById('modalSiswa').style.display = 'none'; }
+        function simpanData() { alert("Berhasil! Data siswa tersimpan."); tutupModal(); }
+        function konfirmasiHapus() { if(confirm("Yakin hapus data siswa ini?")) { alert("Data dihapus!"); } }
+        document.addEventListener("DOMContentLoaded", function() { const overlay = document.createElement('div'); overlay.className = 'sidebar-overlay'; document.body.appendChild(overlay); const sidebar = document.querySelector('.sidebar'); const menuBtn = document.querySelector('.menu-toggle'); if(menuBtn) { menuBtn.addEventListener('click', () => { sidebar.classList.add('active'); overlay.classList.add('show'); }); } overlay.addEventListener('click', () => { sidebar.classList.remove('active'); overlay.classList.remove('show'); }); });
+    </script>
+</body>
+</html>

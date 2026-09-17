@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi Guru - Sistem Absensi</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: white; width: 400px; border-radius: var(--radius-lg); box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; max-width: 90%;}
+        .modal-header { padding: 20px 25px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; background: #f8fafc;}
+        .modal-body { padding: 25px; }
+        .modal-footer { padding: 15px 25px; border-top: 1px solid #f1f5f9; text-align: right; background: #f8fafc;}
+        .radio-group { display: flex; flex-direction: column; gap: 12px; font-size: 13px; font-weight: 500;}
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>KESISWAAN</h3> <h4>MANAJEMEN DATA</h4> <p>SMK 1 INDONESIA</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="index.html"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li class="active"><a href="absen-guru.html"><i class="fas fa-check-circle"></i> Absensi Guru</a></li>
+            <li><a href="validasi-data.html"><i class="fas fa-clipboard-check"></i> Validasi Data</a></li>
+            <li><a href="rekap-guru.html"><i class="fas fa-file-alt"></i> Rekap Absensi Guru</a></li>
+            <li><a href="profil.html"><i class="fas fa-user-circle"></i> Profil & Akun</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header-top" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <div style="display: flex; align-items: center;">
+                <button class="menu-toggle"><i class="fas fa-bars"></i></button>
+                <div>
+                    <h2 style="font-size: 24px; color: var(--text-dark); font-weight: 600;">Input Absensi Guru</h2>
+                    <p style="font-size: 13px; color: var(--text-gray);">Tanggal: 17 September 2026</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="data-card">
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>No.</th> <th>NUPTK</th> <th style="text-align: left;">Nama Guru</th> <th>Status Hari Ini</th> <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td> <td>1727253756902494</td> <td style="text-align: left; font-weight: 500;">Anastasia Pertiwi</td>
+                            <td><span class="badge badge-hadir">Hadir</span></td>
+                            <td><button class="btn-action btn-edit" onclick="openModal()"><i class="fas fa-edit"></i> Update</button></td>
+                        </tr>
+                        <tr>
+                            <td>2</td> <td>8205050764060895</td> <td style="text-align: left; font-weight: 500;">Anggabaya Mandala</td>
+                            <td><span class="badge badge-alpa" style="background:#f1f5f9; color:#888;">Belum Diabsen</span></td>
+                            <td><button class="btn-action btn-edit" onclick="openModal()"><i class="fas fa-edit"></i> Update</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Input Absen -->
+    <div class="modal-overlay" id="modalUbah">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="font-size: 16px; font-weight: 600;">Status Kehadiran Guru</h3>
+                <span style="cursor: pointer; font-weight: bold; color: #888;" onclick="closeModal()">✕</span>
+            </div>
+            <div class="modal-body">
+                <div class="radio-group" style="margin-bottom: 20px;">
+                    <label style="color: var(--primary-green);"><input type="radio" name="hadirg"> HADIR</label>
+                    <label style="color: var(--warning-orange);"><input type="radio" name="hadirg"> SAKIT</label>
+                    <label style="color: var(--primary-cyan);"><input type="radio" name="hadirg"> IZIN</label>
+                    <label style="color: var(--danger-red);"><input type="radio" name="hadirg"> ALPA</label>
+                </div>
+                <div>
+                    <label style="font-size: 12px; color: var(--text-gray); display: block; margin-bottom: 5px;">Keterangan / Alasan (Jika tidak hadir)</label>
+                    <input type="text" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); font-family: 'Poppins'; outline: none;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button style="border: none; background: #f1f5f9; padding: 10px 15px; cursor: pointer; border-radius: var(--radius-sm); font-family: 'Poppins'; font-weight: 500; margin-right: 10px;" onclick="closeModal()">Batal</button>
+                <button class="btn-purple">Simpan Absensi</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal() { document.getElementById('modalUbah').style.display = 'flex'; }
+        function closeModal() { document.getElementById('modalUbah').style.display = 'none'; }
+        // Script Hamburger
+        document.addEventListener("DOMContentLoaded", function() { const overlay = document.createElement('div'); overlay.className = 'sidebar-overlay'; document.body.appendChild(overlay); const sidebar = document.querySelector('.sidebar'); const menuBtn = document.querySelector('.menu-toggle'); if(menuBtn) { menuBtn.addEventListener('click', () => { sidebar.classList.add('active'); overlay.classList.add('show'); }); } overlay.addEventListener('click', () => { sidebar.classList.remove('active'); overlay.classList.remove('show'); }); });
+    </script>
+</body>
+</html>

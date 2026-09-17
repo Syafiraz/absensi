@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola User - Sistem Absensi</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: white; width: 450px; border-radius: var(--radius-lg); box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; max-width: 90%;}
+        .modal-header { padding: 20px 25px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #f8fafc;}
+        .modal-body { padding: 25px; }
+        .modal-footer { padding: 15px 25px; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 10px; background: #f8fafc;}
+        .modal-close { cursor: pointer; color: #888; font-weight: bold; font-size: 18px;}
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 12px; color: var(--text-gray); margin-bottom: 5px; font-weight: 500;}
+        .form-control { width: 100%; padding: 10px 15px; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); outline: none; font-size: 13px; font-family: 'Poppins';}
+        .form-control:focus { border-color: var(--primary-purple); box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1); }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>ADMINISTRATOR</h3> <h4>MASTER DATA</h4> <p>SMK 1 INDONESIA</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="index.html"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li class="active"><a href="kelola-user.html"><i class="fas fa-users-cog"></i> Kelola User</a></li>
+            <li><a href="kelola-guru.html"><i class="fas fa-chalkboard-teacher"></i> Kelola Guru</a></li>
+            <li><a href="kelola-siswa.html"><i class="fas fa-user-graduate"></i> Kelola Siswa</a></li>
+            <li><a href="kelola-kelas.html"><i class="fas fa-layer-group"></i> Kelola Kelas</a></li>
+            <li><a href="relasi-kelas.html"><i class="fas fa-link"></i> Relasi Guru-Kelas</a></li>
+            <li><a href="profil.html"><i class="fas fa-user-circle"></i> Profil & Akun</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header-top" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <div style="display: flex; align-items: center;">
+                <button class="menu-toggle"><i class="fas fa-bars"></i></button>
+                <div>
+                    <h2 style="font-size: 24px; color: var(--text-dark); font-weight: 600;">Kelola Semua User</h2>
+                    <p style="font-size: 13px; color: var(--text-gray);">Manajemen akun login pengguna sistem</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <button class="btn-purple" onclick="bukaModal()"><i class="fas fa-plus"></i> Tambah Akun User</button>
+        </div>
+
+        <div class="data-card">
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>No</th> <th style="text-align: left;">Username / Email</th> <th>Nama Pengguna</th> <th>Role Akses</th> <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td> <td style="text-align: left; font-weight: 500;">adminsuper@gmail.com</td> <td>Administrator Utama</td>
+                            <td><span class="badge" style="background:#f3e8ff; color:var(--primary-purple);">Admin</span></td>
+                            <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal()"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete" onclick="konfirmasiHapus()"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>2</td> <td style="text-align: left; font-weight: 500;">budiguru@gmail.com</td> <td>Budi Santoso</td>
+                            <td><span class="badge badge-hadir">Guru</span></td>
+                            <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal()"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete" onclick="konfirmasiHapus()"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>3</td> <td style="text-align: left; font-weight: 500;">kesiswaan1@gmail.com</td> <td>Staff Kesiswaan 1</td>
+                            <td><span class="badge badge-izin">Kesiswaan</span></td>
+                            <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal()"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete" onclick="konfirmasiHapus()"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>4</td> <td style="text-align: left; font-weight: 500;">tari.novi@gmail.com</td> <td>Tari Novitasari</td>
+                            <td><span class="badge badge-hadir">Guru</span></td>
+                            <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal()"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete" onclick="konfirmasiHapus()"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>5</td> <td style="text-align: left; font-weight: 500;">yuliana.al@gmail.com</td> <td>Yuliana Almira</td>
+                            <td><span class="badge badge-hadir">Guru</span></td>
+                            <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal()"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete" onclick="konfirmasiHapus()"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>6</td> <td style="text-align: left; font-weight: 500;">hendra.admin@gmail.com</td> <td>Hendra Pratama</td>
+                            <td><span class="badge" style="background:#f3e8ff; color:var(--primary-purple);">Admin</span></td>
+                            <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal()"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete" onclick="konfirmasiHapus()"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                        <tr>
+                            <td>7</td> <td style="text-align: left; font-weight: 500;">reza.aditya@gmail.com</td> <td>Reza Aditya</td>
+                            <td><span class="badge badge-hadir">Guru</span></td>
+                            <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal()"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete" onclick="konfirmasiHapus()"><i class="fas fa-trash"></i></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Form User -->
+    <div class="modal-overlay" id="modalUser">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="font-size: 16px; font-weight: 600;">Form Data User</h3>
+                <span class="modal-close" onclick="tutupModal()">✕</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nama Lengkap</label>
+                    <input type="text" class="form-control" placeholder="Masukkan nama...">
+                </div>
+                <div class="form-group">
+                    <label>Username / Email</label>
+                    <input type="email" class="form-control" placeholder="Masukkan email...">
+                </div>
+                <div class="form-group">
+                    <label>Password Akun</label>
+                    <input type="password" class="form-control" placeholder="Masukkan password...">
+                </div>
+                
+                <div style="display: flex; gap: 15px;">
+                    <!-- Hak Akses Sistem -->
+                    <div class="form-group" style="flex: 1;">
+                        <label>Hak Akses (Role)</label>
+                        <select class="form-control">
+                            <option>Admin</option>
+                            <option>Guru / Wali Kelas</option>
+                            <option>Kesiswaan</option>
+                        </select>
+                    </div>
+                    <!-- TAMBAHAN BARU: Jabatan di Sekolah -->
+                    <div class="form-group" style="flex: 1;">
+                        <label>Jabatan Struktural</label>
+                        <input type="text" class="form-control" placeholder="Cth: Wakasek Kesiswaan">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button style="border: none; background: #f1f5f9; padding: 10px 15px; border-radius: var(--radius-sm); cursor: pointer; font-family: 'Poppins'; font-weight: 500;" onclick="tutupModal()">Batal</button>
+                <button class="btn-purple" onclick="simpanData()">Simpan Data</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function bukaModal() { document.getElementById('modalUser').style.display = 'flex'; }
+        function tutupModal() { document.getElementById('modalUser').style.display = 'none'; }
+        function simpanData() { alert("Data berhasil disimpan!"); tutupModal(); }
+        function konfirmasiHapus() { if(confirm("Apakah Anda yakin ingin menghapus data ini?")) { alert("Data berhasil dihapus!"); } }
+        
+        // Script Hamburger
+        document.addEventListener("DOMContentLoaded", function() { const overlay = document.createElement('div'); overlay.className = 'sidebar-overlay'; document.body.appendChild(overlay); const sidebar = document.querySelector('.sidebar'); const menuBtn = document.querySelector('.menu-toggle'); if(menuBtn) { menuBtn.addEventListener('click', () => { sidebar.classList.add('active'); overlay.classList.add('show'); }); } overlay.addEventListener('click', () => { sidebar.classList.remove('active'); overlay.classList.remove('show'); }); });
+    </script>
+</body>
+</html>

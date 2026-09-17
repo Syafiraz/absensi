@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Akun - Sistem Absensi</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS KHUSUS PROFIL PREMIUM */
+        .profile-container { max-width: 800px; margin: 0 auto; }
+        .profile-card { background: #fff; border-radius: var(--radius-lg); box-shadow: var(--shadow-hover); overflow: hidden; position: relative; border: 1px solid #f1f5f9;}
+        
+        .profile-cover { height: 160px; background: linear-gradient(135deg, var(--primary-purple), #3b82f6); position: relative; }
+        .profile-content { padding: 0 40px 40px; text-align: center; }
+        
+        .profile-avatar { 
+            width: 130px; height: 130px; border-radius: 50%; 
+            background: #fff; border: 5px solid #fff; 
+            margin: -65px auto 15px; position: relative; z-index: 10;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 55px; color: var(--primary-purple);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .profile-name { font-size: 26px; color: var(--text-dark); font-weight: 700; letter-spacing: -0.5px; margin-bottom: 5px;}
+        .profile-role { display: inline-block; background: #f3e8ff; color: var(--primary-purple); padding: 5px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 30px;}
+
+        /* Grid Data Profil */
+        .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; text-align: left; }
+        .info-box { background: #f8fafc; padding: 20px; border-radius: var(--radius-md); border: 1px solid #e2e8f0; transition: 0.3s; }
+        .info-box:hover { border-color: var(--primary-purple); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.08); background: #fff;}
+        .info-box label { font-size: 12px; color: var(--text-gray); font-weight: 500; display: block; margin-bottom: 8px;}
+        .info-box .value { font-size: 14px; font-weight: 600; color: var(--text-dark); display: flex; align-items: center; gap: 12px;}
+        .info-box .value i { color: var(--primary-purple); font-size: 18px; width: 20px; text-align: center;}
+
+        /* Tombol Aksi */
+        .profile-actions { display: flex; gap: 15px; margin-top: 40px; }
+        .btn-edit { flex: 1; background: #fff; border: 2px solid var(--primary-purple); color: var(--primary-purple); padding: 14px; border-radius: var(--radius-sm); font-weight: 600; font-family: 'Poppins'; font-size: 14px; cursor: pointer; transition: 0.3s;}
+        .btn-edit:hover { background: #f3e8ff; }
+        .btn-logout { flex: 1; background: var(--danger-red); border: none; color: #fff; padding: 14px; border-radius: var(--radius-sm); font-weight: 600; font-family: 'Poppins'; font-size: 14px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);}
+        .btn-logout:hover { background: #dc2626; transform: translateY(-2px);}
+
+        /* CSS KHUSUS MODAL POP-UP EDIT */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: white; width: 500px; border-radius: var(--radius-lg); box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; max-width: 90%; text-align: left;}
+        .modal-header { padding: 20px 25px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #f8fafc;}
+        .modal-body { padding: 25px; max-height: 70vh; overflow-y: auto;}
+        .modal-footer { padding: 15px 25px; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 10px; background: #f8fafc;}
+        .modal-close { cursor: pointer; color: #888; font-weight: bold; font-size: 18px;}
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 12px; color: var(--text-gray); margin-bottom: 5px; font-weight: 500;}
+        .form-control { width: 100%; padding: 12px 15px; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); outline: none; font-size: 13px; font-family: 'Poppins'; color: var(--text-dark);}
+        .form-control:focus { border-color: var(--primary-purple); box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1); }
+
+        /* Responsif HP */
+        @media (max-width: 768px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .profile-actions { flex-direction: column; }
+            .profile-content { padding: 0 20px 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>AKUN PENGGUNA</h3> <h4>SISTEM ABSENSI</h4> <p>SMK 1 INDONESIA</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="index.html"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="absen-guru.html"><i class="fas fa-check-circle"></i> Absensi Guru</a></li>
+            <li><a href="validasi-data.html"><i class="fas fa-clipboard-check"></i> Validasi Data</a></li>
+            <li><a href="rekap-guru.html"><i class="fas fa-file-alt"></i> Rekap Absensi Guru</a></li>
+            <li class="active"><a href="profil.html"><i class="fas fa-user-circle"></i> Profil & Akun</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header-top" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+            <div style="display: flex; align-items: center;">
+                <button class="menu-toggle"><i class="fas fa-bars"></i></button>
+                <div>
+                    <h2 style="font-size: 24px; color: var(--text-dark); font-weight: 600;">Profil Saya</h2>
+                    <p style="font-size: 13px; color: var(--text-gray);">Kelola informasi pribadi dan keamanan akun</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-container">
+            <div class="profile-card">
+                <div class="profile-cover"></div>
+                <div class="profile-content">
+                    <div class="profile-avatar"><i class="fas fa-user-tie"></i></div>
+                    
+                    <!-- ID ditambahkan agar datanya bisa diubah lewat JS -->
+                    <h3 class="profile-name" id="displayNama">Drs. Hendra Pratama</h3>
+                    <div class="profile-role">Staf Kesiswaan</div>
+
+                    <div class="info-grid">
+                        <div class="info-box">
+                            <label>NIP / ID Karyawan</label>
+                            <div class="value" id="displayNip"><i class="fas fa-id-badge"></i> 19850123 201001 1 001</div>
+                        </div>
+                        <div class="info-box">
+                            <label>Jabatan Struktural</label>
+                            <div class="value"><i class="fas fa-sitemap"></i> Wakil Kepala Kesiswaan</div>
+                        </div>
+                        
+                        <div class="info-box">
+                            <label>Email Address</label>
+                            <div class="value" id="displayEmail"><i class="fas fa-envelope"></i> adminsuper@gmail.com</div>
+                        </div>
+                        <div class="info-box">
+                            <label>Nomor Telepon</label>
+                            <div class="value" id="displayTelp"><i class="fas fa-phone-alt"></i> 0812-3456-7890</div>
+                        </div>
+                        
+                        <div class="info-box">
+                            <label>Status Akun</label>
+                            <div class="value" style="color: var(--primary-green);"><i class="fas fa-check-circle" style="color: var(--primary-green);"></i> Aktif & Terverifikasi</div>
+                        </div>
+                    </div>
+
+                    <div class="profile-actions">
+                        <!-- Tombol Panggil Edit -->
+                        <button class="btn-edit" onclick="bukaModalEdit()"><i class="fas fa-user-edit" style="margin-right: 8px;"></i> Edit Profil</button>
+                        <button class="btn-logout" onclick="prosesLogout()"><i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i> Keluar dari Sistem</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ================= MODAL EDIT PROFIL (STANDAR KEAMANAN) ================= -->
+    <div class="modal-overlay" id="modalEdit">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="font-size: 16px; font-weight: 600; color: var(--text-dark);">Edit Pengaturan Akun</h3>
+                <span class="modal-close" onclick="tutupModalEdit()">✕</span>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Data Terkunci (Read-Only) -->
+                <div class="form-group">
+                    <label>Nama Lengkap <span style="color: var(--danger-red); font-size: 10px;">*Terkunci (Hubungi Admin)</span></label>
+                    <input type="text" id="inputNama" class="form-control" value="Tari Novitasari, M.Pd" disabled style="background: #f1f5f9; color: #94a3b8; cursor: not-allowed;">
+                </div>
+                
+                <div class="form-group">
+                    <label>NUPTK / NIP <span style="color: var(--danger-red); font-size: 10px;">*Terkunci</span></label>
+                    <input type="text" id="inputNip" class="form-control" value="4635678901234567" disabled style="background: #f1f5f9; color: #94a3b8; cursor: not-allowed;">
+                </div>
+
+                <hr style="border: 0; border-top: 1px dashed #e2e8f0; margin: 20px 0;">
+
+                <!-- Data yang bisa diedit -->
+                <div class="form-group">
+                    <label style="color: var(--primary-purple);"><i class="fas fa-envelope"></i> Email Address Baru</label>
+                    <input type="email" id="inputEmail" class="form-control" value="tari.novi@gmail.com">
+                </div>
+                
+                <div class="form-group">
+                    <label style="color: var(--primary-purple);"><i class="fas fa-phone-alt"></i> Nomor WhatsApp Aktif</label>
+                    <input type="text" id="inputTelp" class="form-control" value="0812-3456-7890">
+                </div>
+                
+                <div class="form-group" style="margin-top: 25px; background: #f8fafc; padding: 15px; border-radius: var(--radius-sm); border: 1px solid #e2e8f0;">
+                    <label style="color: var(--text-dark); font-weight: 600; margin-bottom: 10px;"><i class="fas fa-lock" style="color: var(--primary-purple);"></i> Keamanan Akun</label>
+                    <input type="password" class="form-control" placeholder="Ketik password baru jika ingin mengubah..." style="margin-bottom: 8px;">
+                    <p style="font-size: 11px; color: var(--text-gray);">*Biarkan kosong jika tidak ingin mengubah password lama Anda.</p>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button style="border: none; background: #f1f5f9; padding: 10px 15px; border-radius: var(--radius-sm); cursor: pointer; font-family: 'Poppins'; font-weight: 500;" onclick="tutupModalEdit()">Batal</button>
+                <button class="btn-purple" onclick="simpanProfil()">Simpan Perubahan</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Logika Modal Edit Profil
+        function bukaModalEdit() {
+            document.getElementById('modalEdit').style.display = 'flex';
+        }
+
+        function tutupModalEdit() {
+            document.getElementById('modalEdit').style.display = 'none';
+        }
+
+        // Logika Menyimpan dan Mengupdate Data Profil Secara Real-time
+        function simpanProfil() {
+            // Hanya mengambil data Email dan Telp yang bisa diedit
+            let emailBaru = document.getElementById('inputEmail').value;
+            let telpBaru = document.getElementById('inputTelp').value;
+
+            // Update UI di halaman belakangnya
+            document.getElementById('displayEmail').innerHTML = `<i class="fas fa-envelope"></i> ` + emailBaru;
+            document.getElementById('displayTelp').innerHTML = `<i class="fas fa-phone-alt"></i> ` + telpBaru;
+
+            alert("Berhasil! Data kontak dan keamanan akun Anda telah diperbarui.");
+            tutupModalEdit();
+        }
+
+        // Logika Logout
+        function prosesLogout() {
+            if (confirm("Apakah Anda yakin ingin keluar dari sistem?")) {
+                window.location.href = '../login.html'; 
+            }
+        }
+
+        // Script Hamburger Menu Mobile
+        document.addEventListener("DOMContentLoaded", function() { const overlay = document.createElement('div'); overlay.className = 'sidebar-overlay'; document.body.appendChild(overlay); const sidebar = document.querySelector('.sidebar'); const menuBtn = document.querySelector('.menu-toggle'); if(menuBtn) { menuBtn.addEventListener('click', () => { sidebar.classList.add('active'); overlay.classList.add('show'); }); } overlay.addEventListener('click', () => { sidebar.classList.remove('active'); overlay.classList.remove('show'); }); });
+    </script>
+</body>
+</html>
