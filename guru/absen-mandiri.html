@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absen Mandiri - Sistem Absensi</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .clock-area { background: linear-gradient(135deg, var(--primary-purple), #3b82f6); color: white; padding: 40px 20px; border-radius: var(--radius-lg); text-align: center; box-shadow: var(--shadow-hover); margin-bottom: 30px;}
+        .time-display { font-size: 48px; font-weight: 700; font-family: 'Poppins'; letter-spacing: 2px; margin-bottom: 5px; text-shadow: 0 4px 10px rgba(0,0,0,0.2);}
+        .date-display { font-size: 14px; font-weight: 500; opacity: 0.9;}
+        
+        .action-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .btn-absen { background: #fff; border: 2px solid transparent; padding: 30px 20px; border-radius: var(--radius-lg); text-align: center; cursor: pointer; transition: 0.3s; box-shadow: var(--shadow-soft);}
+        .btn-absen:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover);}
+        .btn-absen i { font-size: 36px; margin-bottom: 15px; display: block;}
+        
+        .btn-hadir { color: var(--primary-green); }
+        .btn-hadir:hover, .btn-hadir.active { border-color: var(--primary-green); background: #d1fae5;}
+        
+        .btn-izin { color: var(--primary-cyan); }
+        .btn-izin:hover, .btn-izin.active { border-color: var(--primary-cyan); background: #e0f2fe;}
+        
+        .btn-sakit { color: var(--warning-orange); }
+        .btn-sakit:hover, .btn-sakit.active { border-color: var(--warning-orange); background: #fef3c7;}
+
+        /* Form Keterangan (Sembunyi by default) */
+        .keterangan-area { background: #fff; padding: 25px; border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); margin-top: 20px; display: none; border-left: 4px solid var(--primary-purple);}
+
+        @media (max-width: 768px) { .action-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>GURU / WALI</h3> <h4>PANEL ABSENSI</h4> <p>SMK 1 INDONESIA</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="index.html"><i class="fas fa-home"></i> Dashboard</a></li>
+            <!-- MENU BARU DITAMBAHKAN DI SINI -->
+            <li class="active"><a href="absen-mandiri.html"><i class="fas fa-fingerprint"></i> Absen Mandiri (Saya)</a></li>
+            <li><a href="absen-siswa.html"><i class="fas fa-check-square"></i> Absensi Pagi (Siswa)</a></li>
+            <li><a href="rekap-absen.html"><i class="fas fa-file-alt"></i> Rekap Absensi</a></li>
+            <li><a href="profil.html"><i class="fas fa-user-circle"></i> Profil & Akun</a></li>
+        </ul>
+        <div style="margin-top: auto; padding: 20px;">
+            <a href="#" onclick="prosesLogout()" style="display: flex; align-items: center; padding: 12px 20px; background: #fef2f2; color: #EF4444; text-decoration: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; border: 1px solid #fee2e2;">
+                <i class="fas fa-sign-out-alt" style="margin-right: 15px; font-size: 18px;"></i> Keluar
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header-top" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+            <div style="display: flex; align-items: center;">
+                <button class="menu-toggle"><i class="fas fa-bars"></i></button>
+                <div>
+                    <h2 style="font-size: 24px; color: var(--text-dark); font-weight: 600;">Kehadiran Saya</h2>
+                    <p style="font-size: 13px; color: var(--text-gray);">Catat absensi kedatangan Anda hari ini</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Jam Realtime -->
+        <div class="clock-area">
+            <div class="time-display" id="jamDigital">00:00:00</div>
+            <div class="date-display" id="tanggalDigital">Memuat tanggal...</div>
+        </div>
+
+        <div style="margin-bottom: 15px; font-weight: 600; font-size: 14px; color: var(--text-dark);">Pilih Status Kehadiran Hari Ini:</div>
+        
+        <!-- Pilihan Absen -->
+        <div class="action-grid" id="areaTombolAbsen">
+            <div class="btn-absen btn-hadir" onclick="prosesAbsen('Hadir', this)">
+                <i class="fas fa-check-circle"></i>
+                <div style="font-weight: 600; font-size: 16px;">SAYA HADIR</div>
+                <div style="font-size: 12px; color: var(--text-gray); margin-top: 5px;">Di Area Sekolah</div>
+            </div>
+            <div class="btn-absen btn-izin" onclick="bukaKeterangan('Izin', this)">
+                <i class="fas fa-envelope-open-text"></i>
+                <div style="font-weight: 600; font-size: 16px;">IZIN DINAS / CUTI</div>
+                <div style="font-size: 12px; color: var(--text-gray); margin-top: 5px;">Upload Surat Tugas</div>
+            </div>
+            <div class="btn-absen btn-sakit" onclick="bukaKeterangan('Sakit', this)">
+                <i class="fas fa-briefcase-medical"></i>
+                <div style="font-weight: 600; font-size: 16px;">SAKIT</div>
+                <div style="font-size: 12px; color: var(--text-gray); margin-top: 5px;">Upload Surat Dokter</div>
+            </div>
+        </div>
+
+        <!-- Form Keterangan (Muncul jika klik Sakit/Izin) -->
+        <div class="keterangan-area" id="formKeterangan">
+            <h4 id="judulKeterangan" style="margin-bottom: 15px; color: var(--text-dark);">Detail Keterangan</h4>
+            <div style="margin-bottom: 15px;">
+                <label style="font-size: 12px; font-weight: 500; color: var(--text-gray); display: block; margin-bottom: 5px;">Tulis Alasan Lengkap:</label>
+                <input type="text" style="width: 100%; padding: 12px 15px; border: 1px solid #e2e8f0; border-radius: 6px; outline: none; font-family: 'Poppins';">
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="font-size: 12px; font-weight: 500; color: var(--text-gray); display: block; margin-bottom: 5px;">Upload Bukti (Foto/PDF):</label>
+                <input type="file" style="font-size: 12px; font-family: 'Poppins';">
+            </div>
+            <button class="btn-purple" style="padding: 12px 25px;" onclick="prosesAbsenDariForm()">Kirim Absensi</button>
+        </div>
+
+        <!-- Pesan Sukses -->
+        <div class="alert-box alert-success" id="pesanSukses" style="margin-top: 20px; background: #d1fae5; color: #065f46; padding: 20px; border-radius: 8px; border-left: 4px solid var(--primary-green); display: none; align-items: center; gap: 15px;">
+            <i class="fas fa-check-circle" style="font-size: 24px;"></i>
+            <div>
+                <strong style="font-size: 16px; display: block; margin-bottom: 5px;">Absensi Berhasil Tercatat!</strong>
+                <span style="font-size: 13px;">Data Anda telah dikirim ke staf Kesiswaan untuk divalidasi.</span>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // --- JAM DIGITAL REALTIME ---
+        function updateJam() {
+            const now = new Date();
+            const jam = String(now.getHours()).padStart(2, '0');
+            const menit = String(now.getMinutes()).padStart(2, '0');
+            const detik = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('jamDigital').innerText = `${jam}:${menit}:${detik}`;
+            
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('tanggalDigital').innerText = now.toLocaleDateString('id-ID', options);
+        }
+        setInterval(updateJam, 1000);
+        updateJam();
+
+        // --- LOGIKA ABSENSI ---
+        let statusPilihan = "";
+
+        function prosesAbsen(status, elemenTombol) {
+            let konfirmasi = confirm(`Anda akan check-in dengan status: ${status}. Lanjutkan?`);
+            if(konfirmasi) {
+                kunciAbsensi(elemenTombol);
+            }
+        }
+
+        function bukaKeterangan(status, elemenTombol) {
+            statusPilihan = status;
+            document.getElementById('judulKeterangan').innerText = `Lengkapi Form ${status}`;
+            document.getElementById('formKeterangan').style.display = 'block';
+            
+            // Hapus kelas active dari semua tombol, lalu tambahkan ke tombol yang diklik
+            let tombols = document.querySelectorAll('.btn-absen');
+            tombols.forEach(t => t.classList.remove('active'));
+            elemenTombol.classList.add('active');
+        }
+
+        function prosesAbsenDariForm() {
+            let konfirmasi = confirm(`Kirim data absensi (${statusPilihan}) ke Kesiswaan?`);
+            if(konfirmasi) {
+                let tombolAktif = document.querySelector('.btn-absen.active');
+                document.getElementById('formKeterangan').style.display = 'none';
+                kunciAbsensi(tombolAktif);
+            }
+        }
+
+        function kunciAbsensi(elemenTombol) {
+            // Sembunyikan semua tombol lain dan buat tombol terpilih jadi Read-Only
+            let tombols = document.querySelectorAll('.btn-absen');
+            tombols.forEach(t => {
+                if(t !== elemenTombol) t.style.display = 'none';
+            });
+            elemenTombol.classList.add('active');
+            elemenTombol.style.pointerEvents = 'none'; // Matikan klik
+            document.getElementById('pesanSukses').style.display = 'flex';
+        }
+
+        function prosesLogout() { if(confirm("Keluar dari sistem?")) window.location.href = '../login.html'; }
+        // Hamburger script
+        document.addEventListener("DOMContentLoaded", function() { const overlay = document.createElement('div'); overlay.className = 'sidebar-overlay'; document.body.appendChild(overlay); const sidebar = document.querySelector('.sidebar'); const menuBtn = document.querySelector('.menu-toggle'); if(menuBtn) { menuBtn.addEventListener('click', () => { sidebar.classList.add('active'); overlay.classList.add('show'); }); } overlay.addEventListener('click', () => { sidebar.classList.remove('active'); overlay.classList.remove('show'); }); });
+    </script>
+</body>
+</html>

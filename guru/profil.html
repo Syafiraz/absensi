@@ -69,9 +69,17 @@
         </div>
         <ul class="sidebar-menu">
             <li><a href="index.html"><i class="fas fa-home"></i> Dashboard</a></li>
-            <li><a href="absen-siswa.html"><i class="fas fa-check-square"></i> Absensi Siswa</a></li>
+            <!-- MENU BARU DITAMBAHKAN DI SINI -->
+            <li><a href="absen-mandiri.html"><i class="fas fa-fingerprint"></i> Absen Mandiri (Saya)</a></li>
+            <li><a href="absen-siswa.html"><i class="fas fa-check-square"></i> Absensi Pagi (Siswa)</a></li>
             <li><a href="rekap-absen.html"><i class="fas fa-file-alt"></i> Rekap Absensi</a></li>
-            <li class="active"><a href="profil.html"><i class="fas fa-user-circle"></i> Profil & Akun</a></li></ul>
+            <li class="active"><a href="profil.html"><i class="fas fa-user-circle"></i> Profil & Akun</a></li>
+        </ul>
+        <div style="margin-top: auto; padding: 20px;">
+            <a href="#" onclick="prosesLogout()" style="display: flex; align-items: center; padding: 12px 20px; background: #fef2f2; color: #EF4444; text-decoration: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; border: 1px solid #fee2e2;">
+                <i class="fas fa-sign-out-alt" style="margin-right: 15px; font-size: 18px;"></i> Keluar
+            </a>
+        </div>
     </aside>
 
     <main class="main-content">
@@ -99,14 +107,6 @@
                         <div class="info-box">
                             <label>NIP / ID Karyawan</label>
                             <div class="value" id="displayNip"><i class="fas fa-id-badge"></i> 19850123 201001 1 001</div>
-                        </div>
-                        <div class="info-box">
-                            <label>Wali Kelas Dari</label>
-                            <div class="value" style="color: var(--primary-purple);"><i class="fas fa-users"></i> X BDP A</div>
-                        </div>
-                        <div class="info-box">
-                            <label>Mata Pelajaran</label>
-                            <div class="value"><i class="fas fa-book"></i> Produktif Bisnis Digital</div>
                         </div>
                         <div class="info-box">
                             <label>Email Address</label>

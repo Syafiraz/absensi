@@ -3,17 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Absensi Guru - Sistem Absensi</title>
+    <title>Validasi Kehadiran Guru - Sistem Absensi</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: white; width: 400px; border-radius: var(--radius-lg); box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; max-width: 90%;}
-        .modal-header { padding: 20px 25px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; background: #f8fafc;}
-        .modal-body { padding: 25px; }
-        .modal-footer { padding: 15px 25px; border-top: 1px solid #f1f5f9; text-align: right; background: #f8fafc;}
-        .radio-group { display: flex; flex-direction: column; gap: 12px; font-size: 13px; font-weight: 500;}
-    </style>
 </head>
 <body>
     <aside class="sidebar">
@@ -22,11 +14,16 @@
         </div>
         <ul class="sidebar-menu">
             <li><a href="index.html"><i class="fas fa-home"></i> Dashboard</a></li>
-            <li class="active"><a href="absen-guru.html"><i class="fas fa-check-circle"></i> Absensi Guru</a></li>
-            <li><a href="validasi-data.html"><i class="fas fa-clipboard-check"></i> Validasi Data</a></li>
-            <li><a href="rekap-guru.html"><i class="fas fa-file-alt"></i> Rekap Absensi Guru</a></li>
+            <li class="active"><a href="absen-guru.html"><i class="fas fa-user-check"></i> Validasi Absen Guru</a></li>
+            <li><a href="validasi-data.html"><i class="fas fa-clipboard-check"></i> Validasi Absen Siswa</a></li>
+            <li><a href="rekap-absen.html"><i class="fas fa-file-alt"></i> Rekap Absensi</a></li>
             <li><a href="profil.html"><i class="fas fa-user-circle"></i> Profil & Akun</a></li>
         </ul>
+        <div style="margin-top: auto; padding: 20px;">
+            <a href="#" onclick="prosesLogout()" style="display: flex; align-items: center; padding: 12px 20px; background: #fef2f2; color: #EF4444; text-decoration: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; border: 1px solid #fee2e2;">
+                <i class="fas fa-sign-out-alt" style="margin-right: 15px; font-size: 18px;"></i> Keluar
+            </a>
+        </div>
     </aside>
 
     <main class="main-content">
@@ -34,30 +31,66 @@
             <div style="display: flex; align-items: center;">
                 <button class="menu-toggle"><i class="fas fa-bars"></i></button>
                 <div>
-                    <h2 style="font-size: 24px; color: var(--text-dark); font-weight: 600;">Input Absensi Guru</h2>
-                    <p style="font-size: 13px; color: var(--text-gray);">Tanggal: 17 September 2026</p>
+                    <h2 style="font-size: 24px; color: var(--text-dark); font-weight: 600;">Validasi Kehadiran Guru</h2>
+                    <p style="font-size: 13px; color: var(--text-gray);">Cek dan setujui check-in harian dari Staf Pengajar</p>
                 </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px; background: #fff; padding: 10px 20px; border-radius: 30px; box-shadow: var(--shadow-soft);">
+                <i class="fas fa-calendar-day" style="font-size: 24px; color: var(--primary-purple);"></i>
+                <span style="font-size: 13px; font-weight: 600; color: var(--text-dark);" id="tanggalHariIni">Memuat...</span>
             </div>
         </div>
 
         <div class="data-card">
+            <div class="data-header purple">
+                <div>
+                    <h3>Data Check-in Guru Harian</h3>
+                </div>
+                <div>
+                    <!-- TOMBOL DIUBAH MENJADI HIJAU (PRIMARY-GREEN) -->
+                    <button class="btn-action" style="background: var(--primary-green); color: white; border: none; padding: 8px 15px; font-weight: 600; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);" onclick="validasiSemua()"><i class="fas fa-check-double"></i> Setujui Semua (Pending)</button>
+                </div>
+            </div>
             <div class="table-container">
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>No.</th> <th>NUPTK</th> <th style="text-align: left;">Nama Guru</th> <th>Status Hari Ini</th> <th>Aksi</th>
+                            <th>No</th> <th style="text-align: left;">Nama Guru</th> <th>Waktu Check-in</th> <th>Status Laporan</th> <th>Bukti / Ket</th> <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>1</td> <td>1727253756902494</td> <td style="text-align: left; font-weight: 500;">Anastasia Pertiwi</td>
-                            <td><span class="badge badge-hadir">Hadir</span></td>
-                            <td><button class="btn-action btn-edit" onclick="openModal()"><i class="fas fa-edit"></i> Update</button></td>
+                            <td>1</td> <td style="text-align: left; font-weight: 500;">Anastasia Pertiwi, S.Pd</td>
+                            <td><span style="font-weight: 600; color: var(--text-dark);">06:45 WIB</span></td>
+                            <td class="status-cell">
+                                <span style="background: #fffbeb; color: var(--warning-orange); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">Hadir (Pending)</span>
+                            </td>
+                            <td><span style="color: var(--text-gray); font-size: 12px;">-</span></td>
+                            <td class="action-btns">
+                                <button class="btn-action" style="background: var(--primary-green); color: white;" onclick="prosesValidasi(this)"><i class="fas fa-check"></i> Setujui</button>
+                            </td>
                         </tr>
                         <tr>
-                            <td>2</td> <td>8205050764060895</td> <td style="text-align: left; font-weight: 500;">Anggabaya Mandala</td>
-                            <td><span class="badge badge-alpa" style="background:#f1f5f9; color:#888;">Belum Diabsen</span></td>
-                            <td><button class="btn-action btn-edit" onclick="openModal()"><i class="fas fa-edit"></i> Update</button></td>
+                            <td>2</td> <td style="text-align: left; font-weight: 500;">Budi Santoso, S.Kom</td>
+                            <td><span style="font-weight: 600; color: var(--text-dark);">07:12 WIB</span></td>
+                            <td class="status-cell">
+                                <span style="background: #e0f2fe; color: var(--primary-cyan); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">Izin Dinas (Pending)</span>
+                            </td>
+                            <td><a href="#" style="color: var(--primary-purple); font-size: 12px; font-weight: 500;"><i class="fas fa-file-pdf"></i> surat-tugas.pdf</a></td>
+                            <td class="action-btns">
+                                <button class="btn-action" style="background: var(--primary-green); color: white;" onclick="prosesValidasi(this)"><i class="fas fa-check"></i> Setujui</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td> <td style="text-align: left; font-weight: 500; color: var(--text-gray);">Tari Novitasari, M.Pd</td>
+                            <td><span style="color: var(--text-gray); font-size: 12px;">Belum Check-in</span></td>
+                            <td class="status-cell">
+                                <span style="background: #f1f5f9; color: #64748b; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">Menunggu...</span>
+                            </td>
+                            <td><span style="color: var(--text-gray); font-size: 12px;">-</span></td>
+                            <td class="action-btns">
+                                <span style="font-size: 11px; color: var(--text-gray);">Menunggu input guru</span>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -65,36 +98,38 @@
         </div>
     </main>
 
-    <!-- Modal Input Absen -->
-    <div class="modal-overlay" id="modalUbah">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 style="font-size: 16px; font-weight: 600;">Status Kehadiran Guru</h3>
-                <span style="cursor: pointer; font-weight: bold; color: #888;" onclick="closeModal()">✕</span>
-            </div>
-            <div class="modal-body">
-                <div class="radio-group" style="margin-bottom: 20px;">
-                    <label style="color: var(--primary-green);"><input type="radio" name="hadirg"> HADIR</label>
-                    <label style="color: var(--warning-orange);"><input type="radio" name="hadirg"> SAKIT</label>
-                    <label style="color: var(--primary-cyan);"><input type="radio" name="hadirg"> IZIN</label>
-                    <label style="color: var(--danger-red);"><input type="radio" name="hadirg"> ALPA</label>
-                </div>
-                <div>
-                    <label style="font-size: 12px; color: var(--text-gray); display: block; margin-bottom: 5px;">Keterangan / Alasan (Jika tidak hadir)</label>
-                    <input type="text" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); font-family: 'Poppins'; outline: none;">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button style="border: none; background: #f1f5f9; padding: 10px 15px; cursor: pointer; border-radius: var(--radius-sm); font-family: 'Poppins'; font-weight: 500; margin-right: 10px;" onclick="closeModal()">Batal</button>
-                <button class="btn-purple">Simpan Absensi</button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        function openModal() { document.getElementById('modalUbah').style.display = 'flex'; }
-        function closeModal() { document.getElementById('modalUbah').style.display = 'none'; }
-        // Script Hamburger
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('tanggalHariIni').innerText = new Date().toLocaleDateString('id-ID', options);
+
+        function prosesValidasi(tombolElement) {
+            let baris = tombolElement.closest('tr');
+            let statusCell = baris.querySelector('.status-cell');
+            
+            if(statusCell.innerText.includes("Hadir")) {
+                statusCell.innerHTML = '<span style="background: #d1fae5; color: var(--primary-green); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;"><i class="fas fa-check-double"></i> Tervalidasi (Hadir)</span>';
+            } else {
+                statusCell.innerHTML = '<span style="background: #d1fae5; color: var(--primary-green); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;"><i class="fas fa-check-double"></i> Tervalidasi (Izin/Sakit)</span>';
+            }
+            
+            let actionCell = baris.querySelector('.action-btns');
+            actionCell.innerHTML = '<span style="font-size: 12px; color: #10B981; font-weight: 500;"><i class="fas fa-check-double"></i> Selesai</span>';
+        }
+
+        function validasiSemua() {
+            let konfirmasi = confirm("Validasi SEMUA data absen guru yang berstatus 'Pending' saat ini?");
+            if(konfirmasi) {
+                // BUG FIX: Hanya cari tombol Setujui di dalam tabel (tbody), jangan di header
+                let tombols = document.querySelectorAll('tbody .btn-action');
+                tombols.forEach(btn => {
+                    if(btn.innerText.includes("Setujui")) {
+                        prosesValidasi(btn); 
+                    }
+                });
+            }
+        }
+
+        function prosesLogout() { if(confirm("Keluar dari sistem?")) window.location.href = '../login.html'; }
         document.addEventListener("DOMContentLoaded", function() { const overlay = document.createElement('div'); overlay.className = 'sidebar-overlay'; document.body.appendChild(overlay); const sidebar = document.querySelector('.sidebar'); const menuBtn = document.querySelector('.menu-toggle'); if(menuBtn) { menuBtn.addEventListener('click', () => { sidebar.classList.add('active'); overlay.classList.add('show'); }); } overlay.addEventListener('click', () => { sidebar.classList.remove('active'); overlay.classList.remove('show'); }); });
     </script>
 </body>
