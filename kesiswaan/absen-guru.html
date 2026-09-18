@@ -6,11 +6,61 @@
     <title>Validasi Kehadiran Guru - Sistem Absensi</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .card-flat { background: #fff; border-radius: var(--radius-lg); box-shadow: 0 4px 20px rgba(0,0,0,0.05); overflow: hidden; margin-bottom: 30px; border: 1px solid #f1f5f9; }
+        
+        .card-header-purple { background: var(--primary-purple); padding: 25px 30px; display: flex; justify-content: space-between; align-items: center; gap: 15px; }
+        .header-title-area h3 { color: #fff; font-size: 20px; font-weight: 600; margin: 0 0 5px 0; }
+        .header-title-area p { color: rgba(255,255,255,0.8); font-size: 13px; margin: 0; font-weight: 500;}
+        
+        .card-body { padding: 30px; }
+        
+        /* DESAIN TABEL DESKTOP (NORMAL) */
+        .table-flat { width: 100%; border-collapse: collapse; }
+        .table-flat thead { background-color: #f8fafc; }
+        .table-flat th { padding: 18px 15px; font-size: 12px; font-weight: 700; color: #334155; text-transform: uppercase; letter-spacing: 1px; text-align: center; border: none; white-space: nowrap; }
+        .table-flat th.left { text-align: left; }
+        .table-flat td { padding: 20px 15px; font-size: 14px; color: var(--text-dark); text-align: center; border-bottom: 1px solid #f1f5f9; font-weight: 500; white-space: nowrap; }
+        .table-flat td.left { text-align: left; }
+
+        /* TAMPILAN MOBILE: Optimasi Tabel Compact & Presisi */
+        @media (max-width: 768px) {
+            /* CLASS SAKTI UNTUK MENYEMBUNYIKAN ELEMEN DI HP */
+            .hide-mobile { display: none !important; }
+
+            .card-header-purple { 
+                flex-direction: row; 
+                align-items: center; 
+                padding: 15px 20px; 
+                gap: 10px;
+            }
+            .header-title-area { flex: 1; min-width: 0; }
+            .header-title-area h3 { font-size: 15px; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .header-title-area p { font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            
+            .header-action-area { flex-shrink: 0; }
+            .btn-action-mobile { padding: 8px 12px !important; font-size: 11px !important; white-space: nowrap; }
+            
+            .card-body { padding: 15px; } 
+            
+            /* KARTU AJAIB UNTUK TABEL UTAMA */
+            .table-flat, .table-flat tbody, .table-flat tr, .table-flat td { display: block; width: 100%; box-sizing: border-box; }
+            .table-flat thead { display: none; }
+            .table-flat tr { margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+            .table-flat td { display: flex; justify-content: space-between; align-items: center; text-align: right !important; padding: 12px 15px; border-bottom: 1px solid #f1f5f9; font-size: 13px; white-space: normal; gap: 10px; }
+            .table-flat td:last-child { border-bottom: none; }
+            .table-flat td::before { content: attr(data-label); font-weight: 700; font-size: 11px; color: #64748b; text-transform: uppercase; text-align: left; flex-shrink: 0; }
+            
+            .action-btns { justify-content: flex-end; display: flex; flex-wrap: nowrap; gap: 8px; }
+            .action-btns .btn-action { padding: 8px 12px; font-size: 11px; }
+            .action-btns .btn-action i { margin-right: 4px; }
+        }
+    </style>
 </head>
 <body>
     <aside class="sidebar">
         <div class="sidebar-header">
-            <h3>KESISWAAN</h3> <h4>MANAJEMEN DATA</h4> <p>SMK 1 INDONESIA</p>
+            <h3>KESISWAAN</h3> <h4>MANAJEMEN DATA</h4> <p>SMA 4 KARAWANG</p>
         </div>
         <ul class="sidebar-menu">
             <li><a href="index.html"><i class="fas fa-home"></i> Dashboard</a></li>
@@ -41,59 +91,75 @@
             </div>
         </div>
 
-        <div class="data-card">
-            <div class="data-header purple">
-                <div>
+        <div class="card-flat">
+            <div class="card-header-purple">
+                <div class="header-title-area">
                     <h3>Data Check-in Guru Harian</h3>
+                    <p>Status: Menunggu Validasi</p>
                 </div>
-                <div>
-                    <!-- TOMBOL DIUBAH MENJADI HIJAU (PRIMARY-GREEN) -->
-                    <button class="btn-action" style="background: var(--primary-green); color: white; border: none; padding: 8px 15px; font-weight: 600; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);" onclick="validasiSemua()"><i class="fas fa-check-double"></i> Setujui Semua (Pending)</button>
+                <div class="header-action-area">
+                    <button class="btn-action btn-action-mobile" style="background: var(--primary-green); color: white; border: none; padding: 10px 20px; font-weight: 600; font-size: 13px; border-radius: 8px; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); cursor: pointer;" onclick="validasiSemua()"><i class="fas fa-check-double" style="margin-right: 8px;"></i> Setujui Semua (Pending)</button>
                 </div>
             </div>
-            <div class="table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>No</th> <th style="text-align: left;">Nama Guru</th> <th>Waktu Check-in</th> <th>Status Laporan</th> <th>Bukti / Ket</th> <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td> <td style="text-align: left; font-weight: 500;">Anastasia Pertiwi, S.Pd</td>
-                            <td><span style="font-weight: 600; color: var(--text-dark);">06:45 WIB</span></td>
-                            <td class="status-cell">
-                                <span style="background: #fffbeb; color: var(--warning-orange); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">Hadir (Pending)</span>
-                            </td>
-                            <td><span style="color: var(--text-gray); font-size: 12px;">-</span></td>
-                            <td class="action-btns">
-                                <button class="btn-action" style="background: var(--primary-green); color: white;" onclick="prosesValidasi(this)"><i class="fas fa-check"></i> Setujui</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td> <td style="text-align: left; font-weight: 500;">Budi Santoso, S.Kom</td>
-                            <td><span style="font-weight: 600; color: var(--text-dark);">07:12 WIB</span></td>
-                            <td class="status-cell">
-                                <span style="background: #e0f2fe; color: var(--primary-cyan); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">Izin Dinas (Pending)</span>
-                            </td>
-                            <td><a href="#" style="color: var(--primary-purple); font-size: 12px; font-weight: 500;"><i class="fas fa-file-pdf"></i> surat-tugas.pdf</a></td>
-                            <td class="action-btns">
-                                <button class="btn-action" style="background: var(--primary-green); color: white;" onclick="prosesValidasi(this)"><i class="fas fa-check"></i> Setujui</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>3</td> <td style="text-align: left; font-weight: 500; color: var(--text-gray);">Tari Novitasari, M.Pd</td>
-                            <td><span style="color: var(--text-gray); font-size: 12px;">Belum Check-in</span></td>
-                            <td class="status-cell">
-                                <span style="background: #f1f5f9; color: #64748b; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">Menunggu...</span>
-                            </td>
-                            <td><span style="color: var(--text-gray); font-size: 12px;">-</span></td>
-                            <td class="action-btns">
-                                <span style="font-size: 11px; color: var(--text-gray);">Menunggu input guru</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            
+            <div class="card-body">
+                <div style="width: 100%;">
+                    <table class="table-flat">
+                        <thead>
+                            <tr>
+                                <!-- Class hide-mobile ditambahkan pada kolom NO -->
+                                <th class="hide-mobile">NO</th> <th class="left">NAMA GURU</th> <th>WAKTU CHECK-IN</th> <th>STATUS LAPORAN</th> <th>BUKTI / KET</th> <th>AKSI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <!-- Class hide-mobile ditambahkan pada sel NO -->
+                                <td class="hide-mobile" data-label="NO">1</td> 
+                                <td class="left" data-label="NAMA GURU">Anastasia Pertiwi, S.Pd</td>
+                                <td data-label="WAKTU CHECK-IN"><span style="font-weight: 600; color: var(--text-dark);">06:45 WIB</span></td>
+                                <td class="status-cell" data-label="STATUS LAPORAN">
+                                    <span style="background: #fffbeb; color: var(--warning-orange); padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 600;">Hadir (Pending)</span>
+                                </td>
+                                <td data-label="BUKTI / KET"><span style="color: var(--text-gray); font-size: 12px;">-</span></td>
+                                <td data-label="AKSI">
+                                    <div class="action-btns">
+                                        <button class="btn-action" style="background: var(--primary-green); color: white; border-radius: 6px; border: none;" onclick="prosesValidasi(this)"><i class="fas fa-check"></i> Setujui</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="hide-mobile" data-label="NO">2</td> 
+                                <td class="left" data-label="NAMA GURU">Budi Santoso, S.Kom</td>
+                                <td data-label="WAKTU CHECK-IN"><span style="font-weight: 600; color: var(--text-dark);">07:12 WIB</span></td>
+                                <td class="status-cell" data-label="STATUS LAPORAN">
+                                    <span style="background: #e0f2fe; color: var(--primary-cyan); padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 600;">Izin Dinas (Pending)</span>
+                                </td>
+                                <td data-label="BUKTI / KET"><a href="#" style="color: var(--primary-purple); font-size: 12px; font-weight: 600;"><i class="fas fa-file-pdf"></i> surat-tugas.pdf</a></td>
+                                <td data-label="AKSI">
+                                    <div class="action-btns">
+                                        <button class="btn-action" style="background: var(--primary-green); color: white; border-radius: 6px; border: none;" onclick="prosesValidasi(this)"><i class="fas fa-check"></i> Setujui</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="hide-mobile" data-label="NO">3</td> 
+                                <td class="left" style="color: var(--text-gray);" data-label="NAMA GURU">Tari Novitasari, M.Pd</td>
+                                <td data-label="WAKTU CHECK-IN"><span style="color: var(--text-gray); font-size: 12px;">Belum Check-in</span></td>
+                                <td class="status-cell" data-label="STATUS LAPORAN">
+                                    <span style="background: #f1f5f9; color: #64748b; padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 600;">Menunggu...</span>
+                                </td>
+                                <td data-label="BUKTI / KET"><span style="color: var(--text-gray); font-size: 12px;">-</span></td>
+                                <td data-label="AKSI">
+                                    <div class="action-btns">
+                                        <span style="font-size: 11px; color: var(--text-gray);">Menunggu input guru</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </main>
@@ -107,28 +173,21 @@
             let statusCell = baris.querySelector('.status-cell');
             
             if(statusCell.innerText.includes("Hadir")) {
-                statusCell.innerHTML = '<span style="background: #d1fae5; color: var(--primary-green); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;"><i class="fas fa-check-double"></i> Tervalidasi (Hadir)</span>';
+                statusCell.innerHTML = '<span style="background: #d1fae5; color: var(--primary-green); padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 700;"><i class="fas fa-check-double"></i> Tervalidasi (Hadir)</span>';
             } else {
-                statusCell.innerHTML = '<span style="background: #d1fae5; color: var(--primary-green); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;"><i class="fas fa-check-double"></i> Tervalidasi (Izin/Sakit)</span>';
+                statusCell.innerHTML = '<span style="background: #d1fae5; color: var(--primary-green); padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 700;"><i class="fas fa-check-double"></i> Tervalidasi (Izin/Sakit)</span>';
             }
             
             let actionCell = baris.querySelector('.action-btns');
-            actionCell.innerHTML = '<span style="font-size: 12px; color: #10B981; font-weight: 500;"><i class="fas fa-check-double"></i> Selesai</span>';
+            actionCell.innerHTML = '<span style="font-size: 12px; color: #10B981; font-weight: 600;"><i class="fas fa-check-double"></i> Selesai</span>';
         }
 
         function validasiSemua() {
-            let konfirmasi = confirm("Validasi SEMUA data absen guru yang berstatus 'Pending' saat ini?");
-            if(konfirmasi) {
-                // BUG FIX: Hanya cari tombol Setujui di dalam tabel (tbody), jangan di header
+            if(confirm("Validasi SEMUA data absen guru yang berstatus 'Pending' saat ini?")) {
                 let tombols = document.querySelectorAll('tbody .btn-action');
-                tombols.forEach(btn => {
-                    if(btn.innerText.includes("Setujui")) {
-                        prosesValidasi(btn); 
-                    }
-                });
+                tombols.forEach(btn => { if(btn.innerText.includes("Setujui")) { prosesValidasi(btn); } });
             }
         }
-
         function prosesLogout() { if(confirm("Keluar dari sistem?")) window.location.href = '../login.html'; }
         document.addEventListener("DOMContentLoaded", function() { const overlay = document.createElement('div'); overlay.className = 'sidebar-overlay'; document.body.appendChild(overlay); const sidebar = document.querySelector('.sidebar'); const menuBtn = document.querySelector('.menu-toggle'); if(menuBtn) { menuBtn.addEventListener('click', () => { sidebar.classList.add('active'); overlay.classList.add('show'); }); } overlay.addEventListener('click', () => { sidebar.classList.remove('active'); overlay.classList.remove('show'); }); });
     </script>

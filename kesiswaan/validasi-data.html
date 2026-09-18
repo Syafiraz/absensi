@@ -7,25 +7,79 @@
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        .card-flat { background: #fff; border-radius: var(--radius-lg); box-shadow: 0 4px 20px rgba(0,0,0,0.05); overflow: hidden; margin-bottom: 30px; border: 1px solid #f1f5f9; }
+        
+        .card-header-purple { background: var(--primary-purple); padding: 25px 30px; display: flex; justify-content: space-between; align-items: center; gap: 15px; }
+        .header-title-area h3 { color: #fff; font-size: 20px; font-weight: 600; margin: 0 0 5px 0; }
+        .header-title-area p { color: rgba(255,255,255,0.8); font-size: 13px; margin: 0; font-weight: 500;}
+        
+        .card-body { padding: 30px; }
+        
+        /* DESAIN TABEL UTAMA (FLAT) */
+        .table-flat { width: 100%; border-collapse: collapse; }
+        .table-flat thead { background-color: #f8fafc; }
+        .table-flat th { padding: 18px 15px; font-size: 12px; font-weight: 700; color: #334155; text-transform: uppercase; letter-spacing: 1px; text-align: center; border: none; white-space: nowrap; }
+        .table-flat th.left { text-align: left; }
+        .table-flat td { padding: 20px 15px; font-size: 14px; color: var(--text-dark); text-align: center; border-bottom: 1px solid #f1f5f9; font-weight: 500; white-space: nowrap; }
+        .table-flat td.left { text-align: left; }
+
+        /* TABEL FLEKSIBEL (BASIC) UNTUK DI DALAM MODAL */
+        .table-basic { width: 100%; border-collapse: collapse; }
+        .table-basic thead { background-color: #f8fafc; position: sticky; top: 0; z-index: 10; }
+        .table-basic th { padding: 12px 15px; font-size: 12px; font-weight: 700; color: #334155; text-transform: uppercase; text-align: center; border-bottom: 1px solid #e2e8f0; white-space: nowrap; }
+        .table-basic th.left { text-align: left; }
+        .table-basic td { padding: 12px 15px; font-size: 13px; color: var(--text-dark); text-align: center; border-bottom: 1px solid #f1f5f9; font-weight: 500; white-space: nowrap; }
+        .table-basic td.left { text-align: left; }
+
+        /* MODAL CSS */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 1000; opacity: 0; transition: opacity 0.3s ease;}
         .modal-overlay.show { display: flex; opacity: 1; }
-        .modal-content { background: white; width: 600px; max-width: 95%; border-radius: var(--radius-lg); box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; transform: scale(0.9); transition: transform 0.3s ease;}
+        .modal-content { background: white; width: 600px; max-width: 95%; border-radius: var(--radius-lg); box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; transform: scale(0.9); transition: transform 0.3s ease; max-height: 90vh; display: flex; flex-direction: column;}
         .modal-overlay.show .modal-content { transform: scale(1); }
-        .modal-header { padding: 20px 25px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #f8fafc;}
-        .modal-body { padding: 25px; }
-        .modal-footer { padding: 15px 25px; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; background: #f8fafc;}
+        .modal-header { padding: 20px 25px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; flex-shrink: 0;}
+        .modal-body { padding: 25px; overflow-y: auto; }
+        .modal-footer { padding: 15px 25px; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; background: #f8fafc; flex-shrink: 0;}
         .modal-close { cursor: pointer; color: #888; font-weight: bold; font-size: 18px; transition: 0.3s;}
         .modal-close:hover { color: var(--danger-red); transform: scale(1.1);}
         
         .detail-info { display: flex; justify-content: space-between; margin-bottom: 20px; background: #f1f5f9; padding: 15px; border-radius: var(--radius-sm); font-size: 12px; color: var(--text-gray); flex-wrap: wrap; gap: 10px;}
         .detail-info div strong { color: var(--primary-purple); display: block; font-size: 13px; margin-bottom: 3px;}
-        .data-table tbody tr { transition: all 0.3s ease; }
+
+        /* TAMPILAN KHUSUS MOBILE */
+        @media (max-width: 768px) {
+            /* CLASS SAKTI UNTUK MENYEMBUNYIKAN ELEMEN DI HP */
+            .hide-mobile { display: none !important; }
+
+            .card-header-purple { flex-direction: row; align-items: center; padding: 15px 20px; gap: 10px; }
+            .header-title-area { flex: 1; min-width: 0; }
+            .header-title-area h3 { font-size: 15px; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .header-title-area p { font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .header-action-area { flex-shrink: 0; }
+            .btn-action-mobile { padding: 8px 12px !important; font-size: 11px !important; white-space: nowrap; }
+            
+            .card-body { padding: 15px; } 
+
+            /* KARTU AJAIB UNTUK TABEL UTAMA */
+            .table-flat, .table-flat tbody, .table-flat tr, .table-flat td { display: block; width: 100%; box-sizing: border-box; }
+            .table-flat thead { display: none; }
+            .table-flat tr { margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+            .table-flat td { display: flex; justify-content: space-between; align-items: center; text-align: right !important; padding: 12px 15px; border-bottom: 1px solid #f1f5f9; font-size: 13px; white-space: normal; gap: 10px; }
+            .table-flat td:last-child { border-bottom: none; }
+            .table-flat td::before { content: attr(data-label); font-weight: 700; font-size: 11px; color: #64748b; text-transform: uppercase; text-align: left; flex-shrink: 0; }
+            
+            /* Penempatan Tombol Sejajar di Kanan pada Mobile */
+            .action-btns { justify-content: flex-end; display: flex; flex-wrap: nowrap; gap: 8px; }
+            .action-btns .btn-action { padding: 8px 12px; font-size: 11px; }
+            .action-btns .btn-action i { margin-right: 4px; }
+            
+            .modal-body { padding: 15px; }
+        }
     </style>
 </head>
 <body>
     <aside class="sidebar">
         <div class="sidebar-header">
-            <h3>KESISWAAN</h3> <h4>MANAJEMEN DATA</h4> <p>SMK 1 INDONESIA</p>
+            <h3>KESISWAAN</h3> <h4>MANAJEMEN DATA</h4> <p>SMA 4 KARAWANG</p>
         </div>
         <ul class="sidebar-menu">
             <li><a href="index.html"><i class="fas fa-home"></i> Dashboard</a></li>
@@ -56,61 +110,73 @@
             </div>
         </div>
 
-        <div class="data-card">
-            <div class="data-header purple">
-                <div>
-                    <h3>Data Laporan Kehadiran Kelas (Pending)</h3>
+        <div class="card-flat">
+            <div class="card-header-purple">
+                <div class="header-title-area">
+                    <h3>Laporan Kehadiran Kelas</h3>
+                    <p>Status: Menunggu Validasi</p>
                 </div>
-                <div>
-                    <!-- TOMBOL DIUBAH MENJADI HIJAU (PRIMARY-GREEN) -->
-                    <button class="btn-action" style="background: var(--primary-green); color: white; border: none; padding: 8px 15px; font-weight: 600; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);" onclick="validasiSemuaSiswa()"><i class="fas fa-check-double"></i> Validasi Semua Kelas</button>
+                <div class="header-action-area">
+                    <button class="btn-action btn-action-mobile" style="background: var(--primary-green); color: white; border: none; padding: 10px 20px; font-weight: 600; font-size: 13px; border-radius: 8px; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); cursor: pointer;" onclick="validasiSemuaSiswa()"><i class="fas fa-check-double" style="margin-right: 8px;"></i> Validasi Semua Kelas</button>
                 </div>
             </div>
-            <div class="table-container">
-                <table class="data-table" id="tabelValidasi">
-                    <thead>
-                        <tr>
-                            <th>Waktu Laporan</th> <th>Kelas</th> <th>Dilaporkan Oleh (Guru)</th> <th>Status Laporan</th> <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>07:15 WIB</td> 
-                            <td class="nama-kelas" style="font-weight: 600; color: var(--primary-purple);">X.1</td> 
-                            <td class="nama-guru">Yuliana Almira</td>
-                            <td class="status-cell">
-                                <span style="background: #fffbeb; color: var(--warning-orange); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">Pending</span>
-                            </td>
-                            <td class="action-btns">
-                                <button class="btn-action" style="background: var(--primary-green); color: white;" onclick="prosesValidasiSiswa(this)"><i class="fas fa-check"></i> Validasi</button>
-                                <button class="btn-action btn-edit" onclick="bukaDetail(this, 'Hari Ini')"><i class="fas fa-eye"></i> Detail</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>07:18 WIB</td> 
-                            <td class="nama-kelas" style="font-weight: 600; color: var(--primary-purple);">XI.2</td> 
-                            <td class="nama-guru">Budi Santoso</td>
-                            <td class="status-cell">
-                                <span style="background: #fffbeb; color: var(--warning-orange); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">Pending</span>
-                            </td>
-                            <td class="action-btns">
-                                <button class="btn-action" style="background: var(--primary-green); color: white;" onclick="prosesValidasiSiswa(this)"><i class="fas fa-check"></i> Validasi</button>
-                                <button class="btn-action btn-edit" onclick="bukaDetail(this, 'Hari Ini')"><i class="fas fa-eye"></i> Detail</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>07:05 WIB</td> 
-                            <td class="nama-kelas" style="font-weight: 600; color: var(--text-gray);">XII.1</td> 
-                            <td class="nama-guru">Tari Novitasari</td>
-                            <td class="status-cell">
-                                <span style="background: #d1fae5; color: var(--primary-green); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">Tervalidasi</span>
-                            </td>
-                            <td class="action-btns">
-                                <span style="font-size: 12px; color: #10B981; font-weight: 500;"><i class="fas fa-check-double"></i> Selesai</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            
+            <div class="card-body">
+                <div style="width: 100%;">
+                    <table class="table-flat">
+                        <thead>
+                            <tr>
+                                <!-- Sembunyikan Waktu Laporan di HP -->
+                                <th class="hide-mobile">WAKTU LAPORAN</th> <th>KELAS</th> <th class="left">DILAPORKAN OLEH</th> <th>STATUS LAPORAN</th> <th>AKSI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <!-- Sembunyikan Waktu Laporan di HP -->
+                                <td class="hide-mobile" data-label="WAKTU LAPORAN"><span style="font-weight: 600;">07:15 WIB</span></td> 
+                                
+                                <td class="nama-kelas" data-label="KELAS" style="font-weight: 700; color: var(--primary-purple); font-size: 15px;">X.1</td> 
+                                <td class="nama-guru left" data-label="DILAPORKAN OLEH">Yuliana Almira</td>
+                                <td class="status-cell" data-label="STATUS LAPORAN">
+                                    <span style="background: #fffbeb; color: var(--warning-orange); padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 600;">Pending</span>
+                                </td>
+                                <td data-label="AKSI">
+                                    <div class="action-btns">
+                                        <button class="btn-action btn-edit" style="border-radius: 6px; border: 1px solid #e2e8f0; background: #fff; color: var(--text-dark);" onclick="bukaDetail(this)"><i class="fas fa-eye"></i> Detail</button>
+                                        <button class="btn-action" style="background: var(--primary-green); color: white; border-radius: 6px; border: none;" onclick="prosesValidasiSiswa(this)"><i class="fas fa-check"></i> Validasi</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="hide-mobile" data-label="WAKTU LAPORAN"><span style="font-weight: 600;">07:18 WIB</span></td> 
+                                <td class="nama-kelas" data-label="KELAS" style="font-weight: 700; color: var(--primary-purple); font-size: 15px;">XI.2</td> 
+                                <td class="nama-guru left" data-label="DILAPORKAN OLEH">Budi Santoso</td>
+                                <td class="status-cell" data-label="STATUS LAPORAN">
+                                    <span style="background: #fffbeb; color: var(--warning-orange); padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 600;">Pending</span>
+                                </td>
+                                <td data-label="AKSI">
+                                    <div class="action-btns">
+                                        <button class="btn-action btn-edit" style="border-radius: 6px; border: 1px solid #e2e8f0; background: #fff; color: var(--text-dark);" onclick="bukaDetail(this)"><i class="fas fa-eye"></i> Detail</button>
+                                        <button class="btn-action" style="background: var(--primary-green); color: white; border-radius: 6px; border: none;" onclick="prosesValidasiSiswa(this)"><i class="fas fa-check"></i> Validasi</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="hide-mobile" data-label="WAKTU LAPORAN"><span style="color: var(--text-gray); font-weight: 600;">07:05 WIB</span></td> 
+                                <td class="nama-kelas" data-label="KELAS" style="font-weight: 700; color: var(--text-gray); font-size: 15px;">XII.1</td> 
+                                <td class="nama-guru left" data-label="DILAPORKAN OLEH" style="color: var(--text-gray);">Tari Novitasari</td>
+                                <td class="status-cell" data-label="STATUS LAPORAN">
+                                    <span style="background: #d1fae5; color: var(--primary-green); padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 600;">Tervalidasi</span>
+                                </td>
+                                <td data-label="AKSI">
+                                    <div class="action-btns">
+                                        <span style="font-size: 12px; color: #10B981; font-weight: 600;"><i class="fas fa-check-double"></i> Selesai</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </main>
@@ -130,26 +196,41 @@
                     <div><strong>Tanggal</strong> <span id="infoTanggal">-</span></div>
                 </div>
 
-                <div style="max-height: 250px; overflow-y: auto; border: 1px solid #f1f5f9; border-radius: var(--radius-sm);">
-                    <table class="data-table" style="margin: 0;">
-                        <thead style="position: sticky; top: 0; z-index: 10;">
-                            <tr>
-                                <th>No</th> <th style="text-align: left;">Nama Siswa</th> <th>Status</th>
+                <div style="overflow-x: auto; border: 1px solid #e2e8f0; border-radius: var(--radius-sm);">
+                    <table class="table-basic" style="margin: 0; min-width: 400px;">
+                        <thead>
+                            <tr> 
+                                <th>NO</th> <th class="left">NAMA SISWA</th> <th>STATUS</th> 
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td>1</td> <td style="text-align: left;">Almira Pratiwi</td> <td><span class="badge badge-hadir">Hadir</span></td></tr>
-                            <tr><td>2</td> <td style="text-align: left;">Amelia Wijayanti</td> <td><span class="badge badge-hadir">Hadir</span></td></tr>
-                            <tr><td>3</td> <td style="text-align: left;">Zahra Safitri</td> <td><span class="badge badge-izin">Izin</span></td></tr>
-                            <tr><td>4</td> <td style="text-align: left;">Budi Prakoso</td> <td><span class="badge badge-sakit">Sakit</span></td></tr>
-                            <tr><td>5</td> <td style="text-align: left;">Reza Aditya</td> <td><span class="badge badge-alpa">Alpa</span></td></tr>
+                            <tr>
+                                <td>1</td> <td class="left">Almira Pratiwi</td> 
+                                <td><span style="background: #d1fae5; color: #065f46; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">Hadir</span></td>
+                            </tr>
+                            <tr>
+                                <td>2</td> <td class="left">Amelia Wijayanti</td> 
+                                <td><span style="background: #d1fae5; color: #065f46; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">Hadir</span></td>
+                            </tr>
+                            <tr>
+                                <td>3</td> <td class="left">Zahra Safitri</td> 
+                                <td><span style="background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">Izin</span></td>
+                            </tr>
+                            <tr>
+                                <td>4</td> <td class="left">Budi Prakoso</td> 
+                                <td><span style="background: #fef3c7; color: #b45309; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">Sakit</span></td>
+                            </tr>
+                            <tr>
+                                <td>5</td> <td class="left">Reza Aditya</td> 
+                                <td><span style="background: #fee2e2; color: #b91c1c; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">Alpa</span></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
             <div class="modal-footer">
-                <button class="btn-purple" onclick="tutupDetail()">Tutup Detail</button>
+                <button class="btn-purple" style="border-radius: 8px; padding: 10px 20px; font-size: 13px;" onclick="tutupDetail()">Tutup Detail</button>
             </div>
         </div>
     </div>
@@ -158,7 +239,7 @@
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         document.getElementById('tanggalHariIni').innerText = new Date().toLocaleDateString('id-ID', options);
 
-        function bukaDetail(tombolElement, tanggal) {
+        function bukaDetail(tombolElement) {
             let baris = tombolElement.closest('tr');
             document.getElementById('infoKelas').innerText = baris.querySelector('.nama-kelas').innerText;
             document.getElementById('infoGuru').innerText = baris.querySelector('.nama-guru').innerText;
@@ -170,27 +251,20 @@
             document.getElementById('modalDetail').classList.remove('show');
         }
 
-        // Fungsi Validasi Individual
         function prosesValidasiSiswa(tombolElement) {
             let baris = tombolElement.closest('tr');
             baris.querySelector('.nama-kelas').style.color = 'var(--text-gray)';
+            baris.querySelector('.nama-guru').style.color = 'var(--text-gray)';
             let statusCell = baris.querySelector('.status-cell');
-            statusCell.innerHTML = '<span style="background: #d1fae5; color: var(--primary-green); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">Tervalidasi</span>';
+            statusCell.innerHTML = '<span style="background: #d1fae5; color: var(--primary-green); padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 700;">Tervalidasi</span>';
             let actionCell = baris.querySelector('.action-btns');
-            actionCell.innerHTML = '<span style="font-size: 12px; color: #10B981; font-weight: 500;"><i class="fas fa-check-double"></i> Selesai</span>';
+            actionCell.innerHTML = '<span style="font-size: 12px; color: #10B981; font-weight: 600;"><i class="fas fa-check-double"></i> Selesai</span>';
         }
 
-        // Fungsi Validasi Massal
         function validasiSemuaSiswa() {
-            let konfirmasi = confirm("Apakah Anda yakin ingin memvalidasi SEMUA laporan absensi kelas yang berstatus 'Pending'?");
-            if(konfirmasi) {
-                // BUG FIX: Hanya cari tombol Validasi di dalam tabel (tbody), jangan di header
+            if(confirm("Apakah Anda yakin ingin memvalidasi SEMUA laporan absensi kelas yang berstatus 'Pending'?")) {
                 let tombols = document.querySelectorAll('tbody .btn-action');
-                tombols.forEach(btn => {
-                    if(btn.innerText.includes("Validasi")) {
-                        prosesValidasiSiswa(btn); 
-                    }
-                });
+                tombols.forEach(btn => { if(btn.innerText.includes("Validasi")) { prosesValidasiSiswa(btn); } });
             }
         }
 

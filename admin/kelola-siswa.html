@@ -3,39 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola Siswa - Sistem Absensi</title>
+    <title>Kelola Siswa - Admin</title>
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: white; width: 500px; border-radius: var(--radius-lg); box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; max-width: 90%;}
-        .modal-header { padding: 20px 25px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #f8fafc;}
-        .modal-body { padding: 25px; max-height: 60vh; overflow-y: auto;}
-        .modal-footer { padding: 15px 25px; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 10px; background: #f8fafc;}
-        .modal-close { cursor: pointer; color: #888; font-weight: bold; font-size: 18px;}
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 12px; color: var(--text-gray); margin-bottom: 5px; font-weight: 500;}
-        .form-control { width: 100%; padding: 10px 15px; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); outline: none; font-size: 13px; font-family: 'Poppins';}
-        .form-control:focus { border-color: var(--primary-purple); box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1); }
+        .card-flat { background: #fff; border-radius: var(--radius-lg); box-shadow: 0 4px 20px rgba(0,0,0,0.05); overflow: hidden; margin-bottom: 30px; border: 1px solid #f1f5f9; }
         
-        /* Filter di atas tabel */
-        .filter-row { display: flex; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; padding-bottom: 20px; flex-wrap: wrap;}
-        .filter-group { flex: 1; min-width: 150px; }
+        /* HEADER UNGU */
+        .card-header-purple { background: var(--primary-purple); padding: 25px 30px; display: flex; justify-content: space-between; align-items: center; gap: 15px; flex-wrap: nowrap;}
+        .header-title-area { flex: 1; min-width: 0; }
+        .header-title-area h3 { color: #fff; font-size: 20px; font-weight: 600; margin: 0 0 5px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .header-title-area p { color: rgba(255,255,255,0.8); font-size: 13px; margin: 0; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .header-action-area { display: flex; gap: 10px; flex-shrink: 0; }
+        .btn-action-top { border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 13px; font-family: 'Poppins'; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.15);}
+        .btn-action-top:hover { transform: translateY(-2px); }
+        .btn-import { background: #10B981; color: white; }
+        .btn-tambah { background: #F59E0B; color: white; }
+
+        .card-body { padding: 30px; }
+        
+        /* FILTER DESKTOP */
+        .filter-flat { display: flex; flex-wrap: nowrap; gap: 15px; margin-bottom: 25px; border-bottom: 1px solid #f1f5f9; padding-bottom: 25px; align-items: flex-end; }
+        .filter-group { flex: 1; min-width: 0; } 
+        .filter-btn-area { width: 140px; flex-shrink: 0; } 
+        .filter-group label { display: block; font-size: 13px; color: var(--text-gray); font-weight: 600; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .filter-group input, .filter-group select { width: 100%; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: 'Poppins'; font-size: 14px; color: var(--text-dark); outline: none; transition: 0.3s; box-sizing: border-box;}
+        .filter-group input:focus, .filter-group select:focus { border-color: var(--primary-purple); }
+
+        /* TABEL DESKTOP */
+        .table-flat { width: 100%; border-collapse: collapse; }
+        .table-flat thead { background-color: #f8fafc; }
+        .table-flat th { padding: 18px 15px; font-size: 12px; font-weight: 700; color: #334155; text-transform: uppercase; text-align: center; border: none; white-space: nowrap; }
+        .table-flat th.left { text-align: left; }
+        .table-flat td { padding: 18px 15px; font-size: 13px; color: var(--text-dark); text-align: center; border-bottom: 1px solid #f1f5f9; font-weight: 500; white-space: nowrap; }
+        .table-flat td.left { text-align: left; }
+
+        /* CSS TOMBOL GLOBAL (CANTIK) */
+        .action-btns { display: flex; justify-content: center; gap: 8px; flex-wrap: nowrap; }
+        .action-btns button { border: none; border-radius: 6px; color: white; padding: 8px 12px; font-size: 12px; cursor: pointer; transition: 0.3s; }
+        .action-btns button i { margin: 0; }
+        .action-btns button:hover { opacity: 0.8; transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+
+        /* MODAL CSS */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 1000; opacity: 0; transition: 0.3s;}
+        .modal-overlay.show { display: flex; opacity: 1; }
+        .modal-content { background: white; width: 500px; max-width: 95%; border-radius: var(--radius-lg); overflow: hidden; transform: scale(0.9); transition: 0.3s; display: flex; flex-direction: column; max-height: 90vh;}
+        .modal-overlay.show .modal-content { transform: scale(1); }
+        .modal-header { padding: 20px 25px; background: #f8fafc; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;}
+        .modal-body { padding: 25px; overflow-y: auto; font-size: 14px; color: var(--text-dark); line-height: 1.6;}
+        .modal-footer { padding: 15px 25px; border-top: 1px solid #f1f5f9; background: #f8fafc; display: flex; justify-content: flex-end; flex-shrink: 0; gap: 10px;}
+        .modal-close { cursor: pointer; color: #888; font-size: 18px; font-weight: bold; transition: 0.3s; }
+        .modal-close:hover { color: var(--danger-red); }
+
+        .form-group { margin-bottom: 18px; text-align: left; }
+        .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-gray); margin-bottom: 6px; }
+        .form-control { width: 100%; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: 'Poppins'; font-size: 13px; color: var(--text-dark); box-sizing: border-box; outline: none; transition: 0.3s; }
+        .form-control:focus { border-color: var(--primary-purple); box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1); }
+
+        @media (max-width: 768px) {
+            .hide-mobile { display: none !important; }
+
+            .card-header-purple { padding: 15px 20px; }
+            .header-title-area h3 { font-size: 16px; }
+            .header-title-area p { font-size: 11px; }
+            .btn-text { display: none; } 
+            .btn-action-top { padding: 10px 12px; font-size: 14px; border-radius: 6px; }
+
+            .filter-flat { flex-direction: column; align-items: stretch; gap: 12px; }
+            .filter-group { width: 100%; }
+            .filter-btn-area { width: 100%; flex-shrink: unset; }
+            .filter-btn-area button { height: 42px; width: 100%; }
+
+            .card-body { padding: 15px; } 
+
+            .table-flat, .table-flat tbody, .table-flat tr, .table-flat td { display: block; width: 100%; box-sizing: border-box; }
+            .table-flat thead { display: none; }
+            .table-flat tr { margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+            .table-flat td { display: flex; justify-content: space-between; align-items: center; text-align: right !important; padding: 12px 15px; border-bottom: 1px solid #f1f5f9; font-size: 13px; white-space: normal; gap: 10px; }
+            .table-flat td:last-child { border-bottom: none; }
+            .table-flat td::before { content: attr(data-label); font-weight: 700; font-size: 11px; color: #64748b; text-transform: uppercase; text-align: left; flex-shrink: 0; }
+            
+            .action-btns { justify-content: flex-end; }
+            .action-btns button i { margin-right: 4px; }
+            
+            .modal-body { padding: 15px; }
+        }
     </style>
 </head>
 <body>
     <aside class="sidebar">
         <div class="sidebar-header">
-            <h3>ADMINISTRATOR</h3> <h4>MASTER DATA</h4> <p>SMK 1 INDONESIA</p>
+            <h3>ADMINISTRATOR</h3> <h4>MASTER DATA</h4> <p>SMA 4 KARAWANG</p>
         </div>
         <ul class="sidebar-menu">
             <li><a href="index.html"><i class="fas fa-home"></i> Dashboard</a></li>
             <li><a href="kelola-user.html"><i class="fas fa-users-cog"></i> Kelola User</a></li>
             <li><a href="kelola-guru.html"><i class="fas fa-chalkboard-teacher"></i> Kelola Guru</a></li>
-            <li class="active"><a href="kelola-siswa.html"><i class="fas fa-user-graduate"></i> Kelola Siswa</a></li>
+            <li class="active" ><a href="kelola-siswa.html"><i class="fas fa-user-graduate"></i> Kelola Siswa</a></li>
             <li><a href="kelola-kelas.html"><i class="fas fa-layer-group"></i> Kelola Kelas</a></li>
             <li><a href="profil.html"><i class="fas fa-user-circle"></i> Profil & Akun</a></li>
         </ul>
+        <div style="margin-top: auto; padding: 20px;">
+            <a href="#" onclick="prosesLogout()" style="display: flex; align-items: center; padding: 12px 20px; background: #fef2f2; color: #EF4444; text-decoration: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600;">
+                <i class="fas fa-sign-out-alt" style="margin-right: 15px;"></i> Keluar
+            </a>
+        </div>
     </aside>
 
     <main class="main-content">
@@ -43,133 +116,334 @@
             <div style="display: flex; align-items: center;">
                 <button class="menu-toggle"><i class="fas fa-bars"></i></button>
                 <div>
-                    <h2 style="font-size: 24px; color: var(--text-dark); font-weight: 600;">Kelola Data Siswa</h2>
-                    <p style="font-size: 13px; color: var(--text-gray);">Manajemen database seluruh siswa</p>
+                    <h2 style="font-size: 24px; color: var(--text-dark); font-weight: 600;">Data Siswa</h2>
+                    <p style="font-size: 13px; color: var(--text-gray);">Manajemen database peserta didik</p>
                 </div>
             </div>
         </div>
 
-        <div style="margin-bottom: 20px; display: flex; gap: 10px;">
-            <button class="btn-purple" onclick="bukaModal()"><i class="fas fa-plus"></i> Tambah Siswa</button>
-            <button class="btn-purple" style="background: #f1f5f9; color: var(--primary-purple);"><i class="fas fa-file-csv"></i> Import CSV</button>
-        </div>
-
-        <div class="action-bar">
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Cari data...">
-            </div>
-        </div>
-
-        <div class="data-card" style="padding: 25px;">
-            <div class="filter-row">
-                <div class="filter-group">
-                    <label>Pilih Tingkat</label>
-                    <select class="form-control"><option>- Semua Tingkat -</option><option>X</option><option>XI</option><option>XII</option></select>
+        <div class="card-flat">
+            <div class="card-header-purple">
+                <div class="header-title-area">
+                    <h3>Daftar Siswa Aktif</h3>
+                    <p>Total: 1,240 Siswa Terdaftar</p>
                 </div>
-                <div class="filter-group">
-                    <label>Pilih Jurusan</label>
-                    <select class="form-control"><option>- Semua Jurusan -</option><option>BDP</option><option>OTKP</option></select>
+                <div class="header-action-area">
+                    <button class="btn-action-top btn-import" onclick="alert('Fitur Import Excel akan segera hadir!')"><i class="fas fa-file-excel"></i> <span class="btn-text">Import</span></button>
+                    <button class="btn-action-top btn-tambah" onclick="bukaTambahSiswa()"><i class="fas fa-plus"></i> <span class="btn-text">Tambah Siswa</span></button>
                 </div>
             </div>
+            
+            <div class="card-body">
+                <div class="filter-flat">
+                    <div class="filter-group">
+                        <label>Cari Nama atau NIS</label>
+                        <input type="text" placeholder="Ketik NIS / Nama...">
+                    </div>
+                    <div class="filter-group">
+                        <label>Filter Kelas</label>
+                        <select>
+                            <option>Semua Kelas</option>
+                            <option>X.1</option>
+                            <option>X.2</option>
+                            <option>XI.1</option>
+                            <option>XII.1</option>
+                        </select>
+                    </div>
+                    <div class="filter-btn-area">
+                        <button class="btn-purple" style="width: 100%; height: 46px; border-radius: 8px;"><i class="fas fa-search"></i> Cari</button>
+                    </div>
+                </div>
 
-            <div class="table-container" style="padding: 0;">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>NIS</th> <th style="text-align: left;">Nama Lengkap</th> <th>L/P</th> <th>Kelas Saat Ini</th> <th>No HP</th> <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>0146886</td> <td style="text-align: left; font-weight: 500;">Almira Pratiwi</td> <td>P</td>
-                            <td><span style="background: #f3e8ff; color: var(--primary-purple); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">X BDP A</span></td> <td>084015337550</td>
-                            <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal()"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete" onclick="konfirmasiHapus()"><i class="fas fa-trash"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td>2679240</td> <td style="text-align: left; font-weight: 500;">Amelia Wijayanti</td> <td>P</td>
-                            <td><span style="background: #f3e8ff; color: var(--primary-purple); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">XII OTKP A</span></td> <td>084532304874</td>
-                            <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal()"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete" onclick="konfirmasiHapus()"><i class="fas fa-trash"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td>6084227</td> <td style="text-align: left; font-weight: 500;">Cahya Wacana</td> <td>L</td>
-                            <td><span style="background: #f3e8ff; color: var(--primary-purple); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">XII BDP A</span></td> <td>089687584329</td>
-                            <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal()"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete" onclick="konfirmasiHapus()"><i class="fas fa-trash"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td>4290352</td> <td style="text-align: left; font-weight: 500;">Candra Dabukke</td> <td>L</td>
-                            <td><span style="background: #f3e8ff; color: var(--primary-purple); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">X BDP A</span></td> <td>084820206388</td>
-                            <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal()"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete" onclick="konfirmasiHapus()"><i class="fas fa-trash"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td>1234567</td> <td style="text-align: left; font-weight: 500;">Ferdy Pepey</td> <td>L</td>
-                            <td><span style="background: #f3e8ff; color: var(--primary-purple); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">XI RPL A</span></td> <td>081234567890</td>
-                            <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal()"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete" onclick="konfirmasiHapus()"><i class="fas fa-trash"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td>1303733</td> <td style="text-align: left; font-weight: 500;">Garang Nababan</td> <td>L</td>
-                            <td><span style="background: #f3e8ff; color: var(--primary-purple); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">X OTKP B</span></td> <td>085395843971</td>
-                            <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal()"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete" onclick="konfirmasiHapus()"><i class="fas fa-trash"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td>3456789</td> <td style="text-align: left; font-weight: 500;">Zahra Safitri</td> <td>P</td>
-                            <td><span style="background: #f3e8ff; color: var(--primary-purple); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">X BDP A</span></td> <td>082685034499</td>
-                            <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal()"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete" onclick="konfirmasiHapus()"><i class="fas fa-trash"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td>7901233</td> <td style="text-align: left; font-weight: 500;">Toggo</td> <td>L</td>
-                            <td><span style="background: #f3e8ff; color: var(--primary-purple); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">XI TKJ A</span></td> <td>089533344455</td>
-                            <td class="action-btns"><button class="btn-action btn-edit" onclick="bukaModal()"><i class="fas fa-edit"></i></button> <button class="btn-action btn-delete" onclick="konfirmasiHapus()"><i class="fas fa-trash"></i></button></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div style="width: 100%;">
+                    <table class="table-flat">
+                        <thead>
+                            <tr>
+                                <th class="hide-mobile">NO</th> 
+                                <th>NIS</th> 
+                                <th class="left">NAMA LENGKAP</th> 
+                                <th>KELAS</th> 
+                                <th>L/P</th>
+                                <th>AKSI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- HANYA TOMBOL EDIT DAN HAPUS -->
+                            <tr>
+                                <td class="hide-mobile" data-label="NO">1</td> 
+                                <td data-label="NIS">0146886</td> 
+                                <td class="left" data-label="NAMA LENGKAP" style="font-weight: 600;">Almira Pratiwi</td>
+                                <td data-label="KELAS"><span style="background: #f3e8ff; color: var(--primary-purple); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">X.1</span></td>
+                                <td data-label="L/P">P</td>
+                                <td data-label="AKSI">
+                                    <div class="action-btns">
+                                        <button style="background: #3b82f6;" onclick="bukaEditSiswa('0146886', 'Almira Pratiwi', 'X.1', 'P', 'Aktif')"><i class="fas fa-edit"></i></button>
+                                        <button style="background: #ef4444;" onclick="hapusSiswa('Almira Pratiwi')"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="hide-mobile" data-label="NO">2</td> 
+                                <td data-label="NIS">2679240</td> 
+                                <td class="left" data-label="NAMA LENGKAP" style="font-weight: 600;">Budi Santoso</td>
+                                <td data-label="KELAS"><span style="background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">XI.2</span></td>
+                                <td data-label="L/P">L</td>
+                                <td data-label="AKSI">
+                                    <div class="action-btns">
+                                        <button style="background: #3b82f6;" onclick="bukaEditSiswa('2679240', 'Budi Santoso', 'XI.2', 'L', 'Aktif')"><i class="fas fa-edit"></i></button>
+                                        <button style="background: #ef4444;" onclick="hapusSiswa('Budi Santoso')"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="hide-mobile" data-label="NO">3</td> 
+                                <td data-label="NIS">6084227</td> 
+                                <td class="left" data-label="NAMA LENGKAP" style="font-weight: 600;">Citra Kirana</td>
+                                <td data-label="KELAS"><span style="background: #fef3c7; color: #b45309; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">XII.1</span></td>
+                                <td data-label="L/P">P</td>
+                                <td data-label="AKSI">
+                                    <div class="action-btns">
+                                        <button style="background: #3b82f6;" onclick="bukaEditSiswa('6084227', 'Citra Kirana', 'XII.1', 'P', 'Aktif')"><i class="fas fa-edit"></i></button>
+                                        <button style="background: #ef4444;" onclick="hapusSiswa('Citra Kirana')"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="hide-mobile" data-label="NO">4</td> 
+                                <td data-label="NIS">3847192</td> 
+                                <td class="left" data-label="NAMA LENGKAP" style="font-weight: 600;">Dika Pratama</td>
+                                <td data-label="KELAS"><span style="background: #f3e8ff; color: var(--primary-purple); padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">X.1</span></td>
+                                <td data-label="L/P">L</td>
+                                <td data-label="AKSI">
+                                    <div class="action-btns">
+                                        <button style="background: #3b82f6;" onclick="bukaEditSiswa('3847192', 'Dika Pratama', 'X.1', 'L', 'Aktif')"><i class="fas fa-edit"></i></button>
+                                        <button style="background: #ef4444;" onclick="hapusSiswa('Dika Pratama')"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="hide-mobile" data-label="NO">5</td> 
+                                <td data-label="NIS">9928374</td> 
+                                <td class="left" data-label="NAMA LENGKAP" style="font-weight: 600;">Eka Wardhani</td>
+                                <td data-label="KELAS"><span style="background: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">X.2</span></td>
+                                <td data-label="L/P">P</td>
+                                <td data-label="AKSI">
+                                    <div class="action-btns">
+                                        <button style="background: #3b82f6;" onclick="bukaEditSiswa('9928374', 'Eka Wardhani', 'X.2', 'P', 'Aktif')"><i class="fas fa-edit"></i></button>
+                                        <button style="background: #ef4444;" onclick="hapusSiswa('Eka Wardhani')"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="hide-mobile" data-label="NO">6</td> 
+                                <td data-label="NIS">1122334</td> 
+                                <td class="left" data-label="NAMA LENGKAP" style="font-weight: 600;">Fajar Nugraha</td>
+                                <td data-label="KELAS"><span style="background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">XI.1</span></td>
+                                <td data-label="L/P">L</td>
+                                <td data-label="AKSI">
+                                    <div class="action-btns">
+                                        <button style="background: #3b82f6;" onclick="bukaEditSiswa('1122334', 'Fajar Nugraha', 'XI.1', 'L', 'Aktif')"><i class="fas fa-edit"></i></button>
+                                        <button style="background: #ef4444;" onclick="hapusSiswa('Fajar Nugraha')"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="hide-mobile" data-label="NO">7</td> 
+                                <td data-label="NIS">5566778</td> 
+                                <td class="left" data-label="NAMA LENGKAP" style="font-weight: 600;">Gita Savitri</td>
+                                <td data-label="KELAS"><span style="background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">XI.2</span></td>
+                                <td data-label="L/P">P</td>
+                                <td data-label="AKSI">
+                                    <div class="action-btns">
+                                        <button style="background: #3b82f6;" onclick="bukaEditSiswa('5566778', 'Gita Savitri', 'XI.2', 'P', 'Mutasi')"><i class="fas fa-edit"></i></button>
+                                        <button style="background: #ef4444;" onclick="hapusSiswa('Gita Savitri')"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="hide-mobile" data-label="NO">8</td> 
+                                <td data-label="NIS">9988776</td> 
+                                <td class="left" data-label="NAMA LENGKAP" style="font-weight: 600;">Hadi Syahputra</td>
+                                <td data-label="KELAS"><span style="background: #fef3c7; color: #b45309; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">XII.1</span></td>
+                                <td data-label="L/P">L</td>
+                                <td data-label="AKSI">
+                                    <div class="action-btns">
+                                        <button style="background: #3b82f6;" onclick="bukaEditSiswa('9988776', 'Hadi Syahputra', 'XII.1', 'L', 'Aktif')"><i class="fas fa-edit"></i></button>
+                                        <button style="background: #ef4444;" onclick="hapusSiswa('Hadi Syahputra')"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="hide-mobile" data-label="NO">9</td> 
+                                <td data-label="NIS">3344556</td> 
+                                <td class="left" data-label="NAMA LENGKAP" style="font-weight: 600;">Intan Permata</td>
+                                <td data-label="KELAS"><span style="background: #fef3c7; color: #b45309; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">XII.2</span></td>
+                                <td data-label="L/P">P</td>
+                                <td data-label="AKSI">
+                                    <div class="action-btns">
+                                        <button style="background: #3b82f6;" onclick="bukaEditSiswa('3344556', 'Intan Permata', 'XII.2', 'P', 'Aktif')"><i class="fas fa-edit"></i></button>
+                                        <button style="background: #ef4444;" onclick="hapusSiswa('Intan Permata')"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="hide-mobile" data-label="NO">10</td> 
+                                <td data-label="NIS">1231231</td> 
+                                <td class="left" data-label="NAMA LENGKAP" style="font-weight: 600;">Joko Widodo</td>
+                                <td data-label="KELAS"><span style="background: #fee2e2; color: #991b1b; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600;">X.3</span></td>
+                                <td data-label="L/P">L</td>
+                                <td data-label="AKSI">
+                                    <div class="action-btns">
+                                        <button style="background: #3b82f6;" onclick="bukaEditSiswa('1231231', 'Joko Widodo', 'X.3', 'L', 'Dikeluarkan')"><i class="fas fa-edit"></i></button>
+                                        <button style="background: #ef4444;" onclick="hapusSiswa('Joko Widodo')"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </main>
 
-    <!-- Modal Form Siswa -->
-    <div class="modal-overlay" id="modalSiswa">
+    <!-- MODAL POP-UP TAMBAH SISWA -->
+    <div class="modal-overlay" id="modalTambahSiswa">
         <div class="modal-content">
-            <div class="modal-header">
-                <h3 style="font-size: 16px; font-weight: 600;">Form Data Siswa</h3>
-                <span class="modal-close" onclick="tutupModal()">✕</span>
+            <div class="modal-header" style="background: #f8fafc; border-bottom: 1px solid #f1f5f9;">
+                <h3 style="font-size: 16px; margin: 0; color: var(--text-dark);"><i class="fas fa-user-plus" style="color: var(--primary-green); margin-right: 8px;"></i> Tambah Data Siswa Baru</h3>
+                <span class="modal-close" onclick="tutupTambahSiswa()">✕</span>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label>Nomor Induk Siswa (NIS)</label>
-                    <input type="text" class="form-control" placeholder="Masukkan NIS...">
+                    <label>Nomor Induk Siswa (NIS) <span style="color:var(--danger-red);">*</span></label>
+                    <input type="number" id="tambahNis" class="form-control" placeholder="Masukkan 7 digit NIS">
                 </div>
                 <div class="form-group">
-                    <label>Nama Lengkap</label>
-                    <input type="text" class="form-control" placeholder="Masukkan nama siswa...">
-                </div>
-                <div class="form-group" style="display: flex; gap: 15px;">
-                    <div style="flex: 1;">
-                        <label>Jenis Kelamin</label>
-                        <select class="form-control"><option>Laki-laki</option><option>Perempuan</option></select>
-                    </div>
-                    <div style="flex: 1;">
-                        <label>Pilih Kelas</label>
-                        <select class="form-control"><option>X BDP A</option><option>XII OTKP A</option></select>
-                    </div>
+                    <label>Nama Lengkap <span style="color:var(--danger-red);">*</span></label>
+                    <input type="text" id="tambahNama" class="form-control" placeholder="Contoh: Budi Santoso">
                 </div>
                 <div class="form-group">
-                    <label>No. HP Aktif / Orang Tua</label>
-                    <input type="text" class="form-control" placeholder="Contoh: 081234...">
+                    <label>Pilih Kelas</label>
+                    <select id="tambahKelas" class="form-control">
+                        <option value="X.1">X.1</option>
+                        <option value="X.2">X.2</option>
+                        <option value="XI.1">XI.1</option>
+                        <option value="XII.1">XII.1</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Jenis Kelamin</label>
+                    <select id="tambahJk" class="form-control">
+                        <option value="L">Laki-laki (L)</option>
+                        <option value="P">Perempuan (P)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="tambahStatus" class="form-control">
+                        <option value="Aktif">Aktif</option>
+                        <option value="Mutasi">Mutasi / Pindah</option>
+                        <option value="Dikeluarkan">Dikeluarkan</option>
+                    </select>
                 </div>
             </div>
             <div class="modal-footer">
-                <button style="border: none; background: #f1f5f9; padding: 10px 15px; border-radius: var(--radius-sm); cursor: pointer; font-family: 'Poppins'; font-weight: 500;" onclick="tutupModal()">Batal</button>
-                <button class="btn-purple" onclick="simpanData()">Simpan Data</button>
+                <button style="border: 1px solid #cbd5e1; background: #fff; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-family: 'Poppins'; font-size: 13px; font-weight: 600;" onclick="tutupTambahSiswa()">Batal</button>
+                <button style="border: none; background: #10B981; color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Poppins'; font-size: 13px; font-weight: 600; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);" onclick="simpanTambahSiswa()">Simpan Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL POP-UP EDIT SISWA -->
+    <div class="modal-overlay" id="modalEditSiswa">
+        <div class="modal-content">
+            <div class="modal-header" style="background: #f8fafc; border-bottom: 1px solid #f1f5f9;">
+                <h3 style="font-size: 16px; margin: 0; color: var(--text-dark);"><i class="fas fa-user-edit" style="color: var(--primary-purple); margin-right: 8px;"></i> Perbarui Data Siswa</h3>
+                <span class="modal-close" onclick="tutupEditSiswa()">✕</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nomor Induk Siswa (NIS) <span style="color:var(--danger-red);">*</span></label>
+                    <input type="number" id="editNis" class="form-control" placeholder="Masukkan 7 digit NIS">
+                </div>
+                <div class="form-group">
+                    <label>Nama Lengkap <span style="color:var(--danger-red);">*</span></label>
+                    <input type="text" id="editNama" class="form-control" placeholder="Contoh: Budi Santoso">
+                </div>
+                <div class="form-group">
+                    <label>Pilih Kelas</label>
+                    <select id="editKelas" class="form-control">
+                        <option value="X.1">X.1</option>
+                        <option value="X.2">X.2</option>
+                        <option value="X.3">X.3</option>
+                        <option value="XI.1">XI.1</option>
+                        <option value="XI.2">XI.2</option>
+                        <option value="XII.1">XII.1</option>
+                        <option value="XII.2">XII.2</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Jenis Kelamin</label>
+                    <select id="editJk" class="form-control">
+                        <option value="L">Laki-laki (L)</option>
+                        <option value="P">Perempuan (P)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="editStatus" class="form-control">
+                        <option value="Aktif">Aktif</option>
+                        <option value="Mutasi">Mutasi / Pindah</option>
+                        <option value="Dikeluarkan">Dikeluarkan</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button style="border: 1px solid #cbd5e1; background: #fff; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-family: 'Poppins'; font-size: 13px; font-weight: 600;" onclick="tutupEditSiswa()">Batal</button>
+                <button style="border: none; background: var(--primary-purple); color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-family: 'Poppins'; font-size: 13px; font-weight: 600; box-shadow: 0 4px 10px rgba(139, 92, 246, 0.2);" onclick="simpanEditSiswa()">Simpan Perubahan</button>
             </div>
         </div>
     </div>
 
     <script>
-        function bukaModal() { document.getElementById('modalSiswa').style.display = 'flex'; }
-        function tutupModal() { document.getElementById('modalSiswa').style.display = 'none'; }
-        function simpanData() { alert("Berhasil! Data siswa tersimpan."); tutupModal(); }
-        function konfirmasiHapus() { if(confirm("Yakin hapus data siswa ini?")) { alert("Data dihapus!"); } }
+        function bukaTambahSiswa() {
+            document.getElementById('tambahNis').value = '';
+            document.getElementById('tambahNama').value = '';
+            document.getElementById('modalTambahSiswa').classList.add('show');
+        }
+        function tutupTambahSiswa() { document.getElementById('modalTambahSiswa').classList.remove('show'); }
+        function simpanTambahSiswa() {
+            let nis = document.getElementById('tambahNis').value;
+            let nama = document.getElementById('tambahNama').value;
+            if(nis === "" || nama === "") { alert("NIS dan Nama Lengkap wajib diisi!"); return; }
+            alert("Data Siswa Baru (" + nama + ") berhasil ditambahkan!");
+            tutupTambahSiswa();
+        }
+
+        function bukaEditSiswa(nis, nama, kelas, jk, status) {
+            document.getElementById('editNis').value = nis;
+            document.getElementById('editNama').value = nama;
+            document.getElementById('editKelas').value = kelas;
+            document.getElementById('editJk').value = jk;
+            document.getElementById('editStatus').value = status;
+            document.getElementById('modalEditSiswa').classList.add('show');
+        }
+        function tutupEditSiswa() { document.getElementById('modalEditSiswa').classList.remove('show'); }
+        function simpanEditSiswa() {
+            let nis = document.getElementById('editNis').value;
+            let nama = document.getElementById('editNama').value;
+            if(nis === "" || nama === "") { alert("NIS dan Nama Lengkap tidak boleh kosong!"); return; }
+            alert("Perubahan data untuk " + nama + " berhasil disimpan!");
+            tutupEditSiswa();
+        }
+
+        function hapusSiswa(nama) {
+            if(confirm("PERINGATAN: Apakah Anda yakin ingin menghapus data siswa " + nama + " secara permanen?")) {
+                alert("Data " + nama + " berhasil dihapus dari sistem.");
+            }
+        }
+
+        function prosesLogout() { if(confirm("Keluar dari sistem?")) window.location.href = '../login.html'; }
         document.addEventListener("DOMContentLoaded", function() { const overlay = document.createElement('div'); overlay.className = 'sidebar-overlay'; document.body.appendChild(overlay); const sidebar = document.querySelector('.sidebar'); const menuBtn = document.querySelector('.menu-toggle'); if(menuBtn) { menuBtn.addEventListener('click', () => { sidebar.classList.add('active'); overlay.classList.add('show'); }); } overlay.addEventListener('click', () => { sidebar.classList.remove('active'); overlay.classList.remove('show'); }); });
     </script>
 </body>
